@@ -31,11 +31,16 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
     // In a real app, you would handle authentication here
     console.log("Form submitted with data:", formData);
     
-    // Simulate successful authentication
+    // Simulate successful authentication and route based on role
     if (type === 'login') {
-      navigate('/dashboard');
+      if (formData.role === 'mentor') {
+        navigate('/dashboard', { state: { userRole: 'mentor' } });
+      } else {
+        navigate('/dashboard', { state: { userRole: 'mentee' } });
+      }
     } else {
-      navigate('/dashboard');
+      // For signup, also pass the role
+      navigate('/dashboard', { state: { userRole: formData.role } });
     }
   };
 
@@ -123,43 +128,42 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
           </div>
         </div>
 
-        {type === 'signup' && (
-          <div className="space-y-2">
-            <label className="text-sm font-medium">I want to join as</label>
-            <div className="grid grid-cols-2 gap-4">
-              <label className={`flex items-center justify-center gap-2 p-3 rounded-md border cursor-pointer transition-colors
-                ${formData.role === 'mentee' 
-                  ? 'bg-mentee text-white border-mentee' 
-                  : 'bg-background border-input hover:bg-secondary/50'}`}>
-                <input
-                  type="radio"
-                  name="role"
-                  value="mentee"
-                  checked={formData.role === 'mentee'}
-                  onChange={handleChange}
-                  className="sr-only"
-                />
-                <User className="h-4 w-4" />
-                <span>Mentee</span>
-              </label>
-              <label className={`flex items-center justify-center gap-2 p-3 rounded-md border cursor-pointer transition-colors
-                ${formData.role === 'mentor' 
-                  ? 'bg-mentor text-white border-mentor' 
-                  : 'bg-background border-input hover:bg-secondary/50'}`}>
-                <input
-                  type="radio"
-                  name="role"
-                  value="mentor"
-                  checked={formData.role === 'mentor'}
-                  onChange={handleChange}
-                  className="sr-only"
-                />
-                <Briefcase className="h-4 w-4" />
-                <span>Mentor</span>
-              </label>
-            </div>
+        {/* Role selector - show for both login and signup */}
+        <div className="space-y-2">
+          <label className="text-sm font-medium">I am a</label>
+          <div className="grid grid-cols-2 gap-4">
+            <label className={`flex items-center justify-center gap-2 p-3 rounded-md border cursor-pointer transition-colors
+              ${formData.role === 'mentee' 
+                ? 'bg-mentee text-white border-mentee' 
+                : 'bg-background border-input hover:bg-secondary/50'}`}>
+              <input
+                type="radio"
+                name="role"
+                value="mentee"
+                checked={formData.role === 'mentee'}
+                onChange={handleChange}
+                className="sr-only"
+              />
+              <User className="h-4 w-4" />
+              <span>Mentee</span>
+            </label>
+            <label className={`flex items-center justify-center gap-2 p-3 rounded-md border cursor-pointer transition-colors
+              ${formData.role === 'mentor' 
+                ? 'bg-mentor text-white border-mentor' 
+                : 'bg-background border-input hover:bg-secondary/50'}`}>
+              <input
+                type="radio"
+                name="role"
+                value="mentor"
+                checked={formData.role === 'mentor'}
+                onChange={handleChange}
+                className="sr-only"
+              />
+              <Briefcase className="h-4 w-4" />
+              <span>Mentor</span>
+            </label>
           </div>
-        )}
+        </div>
 
         {type === 'login' && (
           <div className="flex justify-end">
