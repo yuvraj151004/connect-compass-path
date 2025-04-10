@@ -10,6 +10,8 @@ import Dashboard from "./pages/Dashboard";
 import MentorProfile from "./pages/MentorProfile";
 import Forum from "./pages/Forum";
 import AuthForm from "./components/AuthForm";
+import HowItWorks from "./pages/HowItWorks";
+import FindMentors from "./pages/FindMentors";
 
 const queryClient = new QueryClient();
 
@@ -25,7 +27,9 @@ const App = () => (
           <Route path="/signup" element={<div className="min-h-screen bg-secondary/30 py-12"><AuthForm type="signup" /></div>} />
           <Route path="/dashboard/*" element={<Dashboard />} />
           <Route path="/mentors/:id" element={<MentorProfile />} />
+          <Route path="/mentors" element={<FindMentors />} />
           <Route path="/forum" element={<Forum />} />
+          <Route path="/about" element={<HowItWorks />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
