@@ -16,7 +16,7 @@ const MentorProfile = () => {
     company: 'Google',
     location: 'San Francisco, CA',
     languages: ['English', 'Spanish'],
-    bio: 'I'm a Product Design Lead with over 8 years of experience in the tech industry. I've helped build products used by millions and led design teams at both startups and large corporations. My passion is helping designers level up their skills and navigate their career path in the tech industry.',
+    bio: "I'm a Product Design Lead with over 8 years of experience in the tech industry. I've helped build products used by millions and led design teams at both startups and large corporations. My passion is helping designers level up their skills and navigate their career path in the tech industry.",
     expertise: [
       'UI/UX Design',
       'Product Strategy',

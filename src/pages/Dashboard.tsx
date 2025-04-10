@@ -1,7 +1,7 @@
 
 import React from 'react';
 import DashboardLayout from '../components/DashboardLayout';
-import { Calendar, MessageCircle, Users, User, Award, Clock, Bookmark, BarChart } from 'lucide-react';
+import { Calendar, MessageCircle, Users, User, Award, Clock, Bookmark, BarChart, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Dashboard = () => {
@@ -37,7 +37,7 @@ const Dashboard = () => {
     {
       id: '2',
       from: 'Michael Chen',
-      message: 'I've shared some resources ahead of our meeting.',
+      message: "I've shared some resources ahead of our meeting.",
       time: '1 day ago',
       unread: false
     }
@@ -64,8 +64,8 @@ const Dashboard = () => {
             <h1 className="text-2xl font-bold">Welcome back, John!</h1>
             <p className="text-muted-foreground">
               {userRole === 'mentee' 
-                ? 'Here's an overview of your mentorship journey.'
-                : 'Here's an overview of your mentoring activity.'}
+                ? "Here's an overview of your mentorship journey."
+                : "Here's an overview of your mentoring activity."}
             </p>
           </div>
           {userRole === 'mentee' && (
