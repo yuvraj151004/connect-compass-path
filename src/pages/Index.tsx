@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
@@ -6,7 +5,7 @@ import Hero from '../components/Hero';
 import Features from '../components/Features';
 import MentorCard from '../components/MentorCard';
 import Footer from '../components/Footer';
-import { ChevronRight, Check, Search } from 'lucide-react';
+import { ChevronRight, Check, Search, User, Calendar } from 'lucide-react';
 
 // Sample data for featured mentors
 const featuredMentors = [
