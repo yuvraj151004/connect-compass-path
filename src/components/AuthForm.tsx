@@ -1,7 +1,8 @@
 
 import React, { useState } from 'react';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Eye, EyeOff, UserPlus, LogIn, Mail, Lock, User, Briefcase } from 'lucide-react';
+import Link from './Link'; // Import our custom Link component
 
 interface AuthFormProps {
   type: 'login' | 'signup';
@@ -34,12 +35,13 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
     // Simulate successful authentication and route based on role
     if (type === 'login') {
       if (formData.role === 'mentor') {
+        // Use the navigate function with the correct state
         navigate('/dashboard', { state: { userRole: 'mentor' } });
       } else {
         navigate('/dashboard', { state: { userRole: 'mentee' } });
       }
     } else {
-      // For signup, also pass the role
+      // For signup, directly navigate to dashboard with role
       navigate('/dashboard', { state: { userRole: formData.role } });
     }
   };
@@ -176,7 +178,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
         <button
           type="submit"
           className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-md transition-colors
-            ${type === 'login' ? 'btn-primary' : 'btn-primary'}`}
+            ${formData.role === 'mentor' ? 'bg-mentor text-white' : 'bg-mentee text-white'}`}
         >
           {type === 'login' ? (
             <>
