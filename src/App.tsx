@@ -13,6 +13,7 @@ import AuthForm from "./components/AuthForm";
 import HowItWorks from "./pages/HowItWorks";
 import FindMentors from "./pages/FindMentors";
 import ScheduleMeeting from "./pages/dashboard/ScheduleMeeting";
+import VirtualMeetingRoom from "./pages/VirtualMeetingRoom";
 
 const queryClient = new QueryClient();
 
@@ -27,11 +28,12 @@ const App = () => (
           <Route path="/login" element={<div className="min-h-screen bg-secondary/30 py-12"><AuthForm type="login" /></div>} />
           <Route path="/signup" element={<div className="min-h-screen bg-secondary/30 py-12"><AuthForm type="signup" /></div>} />
           <Route path="/dashboard/*" element={<Dashboard />} />
-          {/* Remove this route as it's now handled through the Dashboard component and nesting */}
           <Route path="/mentors/:id" element={<MentorProfile />} />
           <Route path="/mentors" element={<FindMentors />} />
           <Route path="/forum" element={<Forum />} />
           <Route path="/about" element={<HowItWorks />} />
+          <Route path="/schedule-meeting" element={<ScheduleMeeting />} />
+          <Route path="/virtual-meeting-room" element={<VirtualMeetingRoom />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

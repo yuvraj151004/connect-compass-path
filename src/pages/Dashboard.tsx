@@ -1,15 +1,34 @@
 
 import React from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import DashboardLayout from '../components/DashboardLayout';
 import { Calendar, MessageCircle, Users, User, Award, Clock, Bookmark, BarChart, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import MyMentors from './dashboard/Mentors';
 import Schedule from './dashboard/Schedule';
+import { Button } from "@/components/ui/button";
+import { toast } from "@/hooks/use-toast";
+
+// Create a Messages component (placeholder)
+const Messages = () => {
+  const location = useLocation();
+  const userRole = location.state?.userRole || 'mentee';
+
+  return (
+    <div className="space-y-6">
+      <h1 className="text-2xl font-bold">Messages</h1>
+      <p className="text-muted-foreground">Communicate with your {userRole === 'mentee' ? 'mentors' : 'mentees'}</p>
+      <div className="bg-card border rounded-lg p-6">
+        <p>This is the messages page where you can chat with your {userRole === 'mentee' ? 'mentors' : 'mentees'}.</p>
+      </div>
+    </div>
+  );
+};
 
 const DashboardHome = () => {
   // Get the role from location state
   const location = useLocation();
+  const navigate = useNavigate();
   const userRole = location.state?.userRole || 'mentee';
   
   // Some sample data for the dashboard
@@ -100,6 +119,39 @@ const DashboardHome = () => {
     }
   ];
 
+  // Handle join meeting
+  const handleJoinMeeting = (meetingId: string) => {
+    toast({
+      title: "Joining meeting",
+      description: "Connecting to the virtual meeting room...",
+    });
+    
+    // In a real app, this would navigate to the actual meeting room
+    setTimeout(() => {
+      navigate('/virtual-meeting-room', { state: { meetingId, userRole } });
+    }, 1500);
+  };
+
+  // Handle reschedule
+  const handleReschedule = (meetingId: string) => {
+    toast({
+      title: "Reschedule options",
+      description: "Opening reschedule options for this session",
+    });
+    
+    navigate('/schedule-meeting', { state: { rescheduleId: meetingId, userRole } });
+  };
+  
+  // Handle message reply
+  const handleReplyMessage = (messageId: string) => {
+    toast({
+      title: "Opening conversation",
+      description: "Loading message thread...",
+    });
+    
+    navigate('/dashboard/messages', { state: { messageId, userRole } });
+  };
+
   return (
     <div className="space-y-6">
       {/* Welcome Section */}
@@ -117,7 +169,7 @@ const DashboardHome = () => {
             Find More Mentors
           </Link>
         ) : (
-          <Link to="/dashboard/schedule" className="btn-primary shrink-0 self-start bg-mentor">
+          <Link to="/schedule-meeting" state={{ userRole }} className="btn-primary shrink-0 self-start bg-mentor">
             Schedule a Session
           </Link>
         )}
@@ -173,7 +225,7 @@ const DashboardHome = () => {
               <Calendar className="h-5 w-5 text-primary" />
               Upcoming Sessions
             </h2>
-            <Link to="/dashboard/schedule" className="text-sm text-primary hover:underline">
+            <Link to="/dashboard/schedule" state={{ userRole }} className="text-sm text-primary hover:underline">
               View All
             </Link>
           </div>
@@ -205,12 +257,19 @@ const DashboardHome = () => {
                           <Calendar className="h-3.5 w-3.5 mr-1" />
                           {formatDate(meeting.date)}
                         </span>
-                        <button className={`inline-flex items-center text-sm ${userRole === 'mentor' ? 'bg-mentor/10 text-mentor' : 'bg-primary/10 text-primary'} rounded-md px-2 py-1 hover:bg-primary/20 transition-colors`}>
+                        <Button 
+                          onClick={() => handleJoinMeeting(meeting.id)}
+                          className={`inline-flex items-center text-sm ${userRole === 'mentor' ? 'bg-mentor text-white' : 'bg-primary text-primary-foreground'} rounded-md px-2 py-1 hover:bg-opacity-90 transition-colors h-auto`}
+                        >
                           Join Meeting
-                        </button>
-                        <button className="inline-flex items-center text-sm bg-secondary text-secondary-foreground rounded-md px-2 py-1 hover:bg-secondary/80 transition-colors">
+                        </Button>
+                        <Button 
+                          onClick={() => handleReschedule(meeting.id)}
+                          variant="outline"
+                          className="inline-flex items-center text-sm rounded-md px-2 py-1 h-auto"
+                        >
                           Reschedule
-                        </button>
+                        </Button>
                       </div>
                     </div>
                   </div>
@@ -219,7 +278,9 @@ const DashboardHome = () => {
             ) : (
               <div className="text-center py-6">
                 <p className="text-muted-foreground">No upcoming meetings scheduled.</p>
-                <button className="btn-primary mt-3">Schedule a Session</button>
+                <Link to="/schedule-meeting" state={{ userRole }}>
+                  <Button className="mt-3">Schedule a Session</Button>
+                </Link>
               </div>
             )}
           </div>
@@ -232,7 +293,7 @@ const DashboardHome = () => {
               <MessageCircle className="h-5 w-5 text-primary" />
               Recent Messages
             </h2>
-            <Link to="/dashboard/messages" className="text-sm text-primary hover:underline">
+            <Link to="/dashboard/messages" state={{ userRole }} className="text-sm text-primary hover:underline">
               View All
             </Link>
           </div>
@@ -253,9 +314,13 @@ const DashboardHome = () => {
                       </div>
                       <p className="text-sm text-muted-foreground mt-1">{message.message}</p>
                       <div className="mt-2">
-                        <Link to={`/dashboard/messages/${message.id}`} className="text-sm text-primary hover:underline">
+                        <Button 
+                          onClick={() => handleReplyMessage(message.id)}
+                          variant="link"
+                          className="text-primary p-0 h-auto"
+                        >
                           Reply
-                        </Link>
+                        </Button>
                       </div>
                     </div>
                     {message.unread && (
@@ -323,7 +388,8 @@ const Dashboard = () => {
         <Route path="/" element={<DashboardHome />} />
         <Route path="/mentors" element={<MyMentors />} />
         <Route path="/schedule" element={<Schedule />} />
-        {/* Add routes for messages and other dashboard pages */}
+        <Route path="/messages" element={<Messages />} />
+        {/* Add routes for other dashboard pages as needed */}
       </Routes>
     </DashboardLayout>
   );
