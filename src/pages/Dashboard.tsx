@@ -63,6 +63,43 @@ const DashboardHome = () => {
     return new Date(dateString).toLocaleString('en-US', options);
   };
 
+  // Define resource data based on user role
+  const menteeResources = [
+    {
+      title: 'Interview Preparation Guide',
+      description: 'A comprehensive guide to ace your technical interviews.',
+      link: '/resources/interviews'
+    },
+    {
+      title: 'Resume Building Workshop',
+      description: 'Learn how to craft a resume that stands out to recruiters.',
+      link: '/resources/resume'
+    },
+    {
+      title: 'Career Transition Stories',
+      description: 'Success stories from mentees who changed careers successfully.',
+      link: '/success-stories'
+    }
+  ];
+  
+  const mentorResources = [
+    {
+      title: 'Effective Mentoring Guide',
+      description: 'Best practices and strategies for impactful mentoring sessions.',
+      link: '/mentor-resources/guide'
+    },
+    {
+      title: 'Mentee Progress Tracker',
+      description: 'Tools to track and document mentee growth and achievements.',
+      link: '/mentor-resources/tracker'
+    },
+    {
+      title: 'Teaching Techniques',
+      description: 'Advanced techniques for explaining complex concepts effectively.',
+      link: '/mentor-resources/teaching'
+    }
+  ];
+
   return (
     <div className="space-y-6">
       {/* Welcome Section */}
@@ -246,48 +283,28 @@ const DashboardHome = () => {
         </div>
         <div className="p-5">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {userRole === 'mentee' ? [
-              {
-                title: 'Interview Preparation Guide',
-                description: 'A comprehensive guide to ace your technical interviews.',
-                link: '/resources/interviews'
-              },
-              {
-                title: 'Resume Building Workshop',
-                description: 'Learn how to craft a resume that stands out to recruiters.',
-                link: '/resources/resume'
-              },
-              {
-                title: 'Career Transition Stories',
-                description: 'Success stories from mentees who changed careers successfully.',
-                link: '/success-stories'
-              }
-            ] : [
-              {
-                title: 'Effective Mentoring Guide',
-                description: 'Best practices and strategies for impactful mentoring sessions.',
-                link: '/mentor-resources/guide'
-              },
-              {
-                title: 'Mentee Progress Tracker',
-                description: 'Tools to track and document mentee growth and achievements.',
-                link: '/mentor-resources/tracker'
-              },
-              {
-                title: 'Teaching Techniques',
-                description: 'Advanced techniques for explaining complex concepts effectively.',
-                link: '/mentor-resources/teaching'
-              }
-            ].map((resource, index) => (
-              <div key={index} className="border rounded-md p-4 hover:border-primary/20 hover:shadow-sm transition-all">
-                <h3 className="font-medium mb-2">{resource.title}</h3>
-                <p className="text-sm text-muted-foreground mb-3">{resource.description}</p>
-                <Link to={resource.link} className="text-sm text-primary hover:underline inline-flex items-center gap-1">
-                  View Resource
-                  <ChevronRight className="h-3 w-3" />
-                </Link>
-              </div>
-            ))}
+            {userRole === 'mentee' 
+              ? menteeResources.map((resource, index) => (
+                <div key={index} className="border rounded-md p-4 hover:border-primary/20 hover:shadow-sm transition-all">
+                  <h3 className="font-medium mb-2">{resource.title}</h3>
+                  <p className="text-sm text-muted-foreground mb-3">{resource.description}</p>
+                  <Link to={resource.link} className="text-sm text-primary hover:underline inline-flex items-center gap-1">
+                    View Resource
+                    <ChevronRight className="h-3 w-3" />
+                  </Link>
+                </div>
+              ))
+              : mentorResources.map((resource, index) => (
+                <div key={index} className="border rounded-md p-4 hover:border-primary/20 hover:shadow-sm transition-all">
+                  <h3 className="font-medium mb-2">{resource.title}</h3>
+                  <p className="text-sm text-muted-foreground mb-3">{resource.description}</p>
+                  <Link to={resource.link} className="text-sm text-primary hover:underline inline-flex items-center gap-1">
+                    View Resource
+                    <ChevronRight className="h-3 w-3" />
+                  </Link>
+                </div>
+              ))
+            }
           </div>
         </div>
       </div>
