@@ -14,6 +14,8 @@ import HowItWorks from "./pages/HowItWorks";
 import FindMentors from "./pages/FindMentors";
 import ScheduleMeeting from "./pages/dashboard/ScheduleMeeting";
 import VirtualMeetingRoom from "./pages/VirtualMeetingRoom";
+import NewSession from "./pages/dashboard/NewSession";
+import Messages from "./pages/dashboard/Messages";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +36,7 @@ const App = () => (
           <Route path="/about" element={<HowItWorks />} />
           <Route path="/schedule-meeting" element={<ScheduleMeeting />} />
           <Route path="/virtual-meeting-room" element={<VirtualMeetingRoom />} />
+          <Route path="/dashboard/new-session" element={<NewSession />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

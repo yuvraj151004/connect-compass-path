@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import DashboardLayout from '../components/DashboardLayout';
@@ -6,32 +5,15 @@ import { Calendar, MessageCircle, Users, User, Award, Clock, Bookmark, BarChart,
 import { Link } from 'react-router-dom';
 import MyMentors from './dashboard/Mentors';
 import Schedule from './dashboard/Schedule';
+import Messages from './dashboard/Messages';
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 
-// Create a Messages component (placeholder)
-const Messages = () => {
-  const location = useLocation();
-  const userRole = location.state?.userRole || 'mentee';
-
-  return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Messages</h1>
-      <p className="text-muted-foreground">Communicate with your {userRole === 'mentee' ? 'mentors' : 'mentees'}</p>
-      <div className="bg-card border rounded-lg p-6">
-        <p>This is the messages page where you can chat with your {userRole === 'mentee' ? 'mentors' : 'mentees'}.</p>
-      </div>
-    </div>
-  );
-};
-
 const DashboardHome = () => {
-  // Get the role from location state
   const location = useLocation();
   const navigate = useNavigate();
   const userRole = location.state?.userRole || 'mentee';
   
-  // Some sample data for the dashboard
   const upcomingMeetings = [
     {
       id: '1',
@@ -70,7 +52,6 @@ const DashboardHome = () => {
     }
   ];
   
-  // Format date for display
   const formatDate = (dateString: string) => {
     const options: Intl.DateTimeFormatOptions = { 
       weekday: 'short', 
@@ -82,7 +63,6 @@ const DashboardHome = () => {
     return new Date(dateString).toLocaleString('en-US', options);
   };
 
-  // Define resource data based on user role
   const menteeResources = [
     {
       title: 'Interview Preparation Guide',
@@ -119,30 +99,28 @@ const DashboardHome = () => {
     }
   ];
 
-  // Handle join meeting
+  const resources = userRole === 'mentor' ? mentorResources : menteeResources;
+
   const handleJoinMeeting = (meetingId: string) => {
     toast({
       title: "Joining meeting",
       description: "Connecting to the virtual meeting room...",
     });
     
-    // In a real app, this would navigate to the actual meeting room
     setTimeout(() => {
       navigate('/virtual-meeting-room', { state: { meetingId, userRole } });
     }, 1500);
   };
 
-  // Handle reschedule
   const handleReschedule = (meetingId: string) => {
     toast({
       title: "Reschedule options",
       description: "Opening reschedule options for this session",
     });
     
-    navigate('/schedule-meeting', { state: { rescheduleId: meetingId, userRole } });
+    navigate('/dashboard/new-session', { state: { rescheduleId: meetingId, userRole } });
   };
   
-  // Handle message reply
   const handleReplyMessage = (messageId: string) => {
     toast({
       title: "Opening conversation",
@@ -154,7 +132,6 @@ const DashboardHome = () => {
 
   return (
     <div className="space-y-6">
-      {/* Welcome Section */}
       <div className="flex flex-col lg:flex-row justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold">Welcome back, John!</h1>
@@ -169,13 +146,12 @@ const DashboardHome = () => {
             Find More Mentors
           </Link>
         ) : (
-          <Link to="/schedule-meeting" state={{ userRole }} className="btn-primary shrink-0 self-start bg-mentor">
+          <Link to="/dashboard/new-session" state={{ userRole }} className="btn-primary shrink-0 self-start bg-mentor">
             Schedule a Session
           </Link>
         )}
       </div>
       
-      {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {[
           {
@@ -218,7 +194,6 @@ const DashboardHome = () => {
       </div>
       
       <div className="grid lg:grid-cols-3 gap-6">
-        {/* Upcoming Meetings */}
         <div className="lg:col-span-2 bg-card border rounded-lg shadow-sm overflow-hidden">
           <div className="p-5 border-b flex justify-between items-center">
             <h2 className="font-semibold text-lg flex items-center gap-2">
@@ -278,7 +253,7 @@ const DashboardHome = () => {
             ) : (
               <div className="text-center py-6">
                 <p className="text-muted-foreground">No upcoming meetings scheduled.</p>
-                <Link to="/schedule-meeting" state={{ userRole }}>
+                <Link to="/dashboard/new-session" state={{ userRole }}>
                   <Button className="mt-3">Schedule a Session</Button>
                 </Link>
               </div>
@@ -286,7 +261,6 @@ const DashboardHome = () => {
           </div>
         </div>
         
-        {/* Recent Messages */}
         <div className="bg-card border rounded-lg shadow-sm overflow-hidden">
           <div className="p-5 border-b flex justify-between items-center">
             <h2 className="font-semibold text-lg flex items-center gap-2">
@@ -338,7 +312,6 @@ const DashboardHome = () => {
         </div>
       </div>
       
-      {/* Suggested Resources / Quick Links */}
       <div className="bg-card border rounded-lg shadow-sm overflow-hidden">
         <div className="p-5 border-b">
           <h2 className="font-semibold text-lg flex items-center gap-2">
@@ -348,28 +321,16 @@ const DashboardHome = () => {
         </div>
         <div className="p-5">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {userRole === 'mentee' 
-              ? menteeResources.map((resource, index) => (
-                <div key={index} className="border rounded-md p-4 hover:border-primary/20 hover:shadow-sm transition-all">
-                  <h3 className="font-medium mb-2">{resource.title}</h3>
-                  <p className="text-sm text-muted-foreground mb-3">{resource.description}</p>
-                  <Link to={resource.link} className="text-sm text-primary hover:underline inline-flex items-center gap-1">
-                    View Resource
-                    <ChevronRight className="h-3 w-3" />
-                  </Link>
-                </div>
-              ))
-              : mentorResources.map((resource, index) => (
-                <div key={index} className="border rounded-md p-4 hover:border-primary/20 hover:shadow-sm transition-all">
-                  <h3 className="font-medium mb-2">{resource.title}</h3>
-                  <p className="text-sm text-muted-foreground mb-3">{resource.description}</p>
-                  <Link to={resource.link} className="text-sm text-primary hover:underline inline-flex items-center gap-1">
-                    View Resource
-                    <ChevronRight className="h-3 w-3" />
-                  </Link>
-                </div>
-              ))
-            }
+            {resources.map((resource, index) => (
+              <div key={index} className="border rounded-md p-4 hover:border-primary/20 hover:shadow-sm transition-all">
+                <h3 className="font-medium mb-2">{resource.title}</h3>
+                <p className="text-sm text-muted-foreground mb-3">{resource.description}</p>
+                <Link to={resource.link} className="text-sm text-primary hover:underline inline-flex items-center gap-1">
+                  View Resource
+                  <ChevronRight className="h-3 w-3" />
+                </Link>
+              </div>
+            ))}
           </div>
         </div>
       </div>
@@ -378,7 +339,6 @@ const DashboardHome = () => {
 };
 
 const Dashboard = () => {
-  // Get the user role from location state
   const location = useLocation();
   const userRole = location.state?.userRole || 'mentee';
   
@@ -389,7 +349,7 @@ const Dashboard = () => {
         <Route path="/mentors" element={<MyMentors />} />
         <Route path="/schedule" element={<Schedule />} />
         <Route path="/messages" element={<Messages />} />
-        {/* Add routes for other dashboard pages as needed */}
+        <Route path="/new-session" element={<NewSession />} />
       </Routes>
     </DashboardLayout>
   );

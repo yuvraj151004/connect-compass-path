@@ -1,348 +1,327 @@
 
 import React, { useState } from 'react';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
-import MentorCard from '../components/MentorCard';
-import { Search, Filter, MapPin, Briefcase, Clock, X } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { CalendarPlus, Search, Briefcase, Star, Filter, Bookmark, CheckCircle } from 'lucide-react';
+import { Navbar } from '@/components/Navbar';
+import { Footer } from '@/components/Footer';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { 
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardFooter } from '@/components/ui/card';
+import { toast } from '@/hooks/use-toast';
 
-// Sample data for mentors
-const allMentors = [
-  {
-    id: '1',
-    name: 'Sarah Johnson',
-    title: 'Product Design Lead',
-    company: 'Google',
-    skills: ['UI/UX Design', 'Product Strategy', 'Career Growth', 'Leadership'],
-    rating: 4.9,
-    reviewCount: 42,
-    featured: true,
-    location: 'San Francisco, CA',
-    hourlyRate: 75,
-    availability: 'Evenings & Weekends'
-  },
-  {
-    id: '2',
-    name: 'Michael Chen',
-    title: 'Senior Software Engineer',
-    company: 'Microsoft',
-    skills: ['Full-Stack Development', 'System Architecture', 'React', 'Mentorship'],
-    rating: 4.8,
-    reviewCount: 35,
-    featured: true,
-    location: 'Seattle, WA',
-    hourlyRate: 85,
-    availability: 'Weekday Evenings'
-  },
-  {
-    id: '3',
-    name: 'Emily Rodriguez',
-    title: 'Marketing Director',
-    company: 'Adobe',
-    skills: ['Digital Marketing', 'Brand Strategy', 'Content Creation', 'Analytics'],
-    rating: 4.7,
-    reviewCount: 29,
-    featured: false,
-    location: 'Austin, TX',
-    hourlyRate: 70,
-    availability: 'Flexible'
-  },
-  {
-    id: '4',
-    name: 'David Park',
-    title: 'Data Science Manager',
-    company: 'Amazon',
-    skills: ['Machine Learning', 'Python', 'Data Analysis', 'AI Ethics'],
-    rating: 4.9,
-    reviewCount: 19,
-    featured: false,
-    location: 'New York, NY',
-    hourlyRate: 90,
-    availability: 'Weekends Only'
-  },
-  {
-    id: '5',
-    name: 'Priya Sharma',
-    title: 'Product Manager',
-    company: 'Spotify',
-    skills: ['Product Strategy', 'Agile Methodologies', 'User Research', 'Roadmapping'],
-    rating: 4.6,
-    reviewCount: 22,
-    featured: false,
-    location: 'London, UK',
-    hourlyRate: 65,
-    availability: 'Weekdays'
-  },
-  {
-    id: '6',
-    name: 'James Wilson',
-    title: 'Frontend Architect',
-    company: 'Netflix',
-    skills: ['React', 'JavaScript', 'UI Architecture', 'Performance Optimization'],
-    rating: 4.8,
-    reviewCount: 31,
-    featured: false,
-    location: 'Los Angeles, CA',
-    hourlyRate: 80,
-    availability: 'Evenings Only'
-  }
-];
-
-// Filter categories
-const categories = [
-  "Software Development",
-  "Design",
-  "Product Management",
-  "Marketing",
-  "Data Science",
-  "Career Development",
-  "Leadership"
-];
+interface Mentor {
+  id: string;
+  name: string;
+  title: string;
+  company: string;
+  rating: number;
+  skills: string[];
+  experience: number;
+  price: number;
+  availability: string;
+  imageUrl: string;
+  bio: string;
+}
 
 const FindMentors = () => {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [activeFilters, setActiveFilters] = useState<string[]>([]);
+  const [bookmarked, setBookmarked] = useState<Record<string, boolean>>({});
   
-  // Handle search input change
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
-  };
-  
-  // Handle category selection
-  const handleCategoryChange = (category: string) => {
-    setSelectedCategory(category === selectedCategory ? '' : category);
-  };
-  
-  // Toggle filter
-  const toggleFilter = (filter: string) => {
-    if (activeFilters.includes(filter)) {
-      setActiveFilters(activeFilters.filter(f => f !== filter));
-    } else {
-      setActiveFilters([...activeFilters, filter]);
+  // Mock data for mentors
+  const mentors: Mentor[] = [
+    {
+      id: '1',
+      name: 'Sarah Johnson',
+      title: 'Senior Software Engineer',
+      company: 'Google',
+      rating: 4.9,
+      skills: ['React', 'Node.js', 'TypeScript', 'System Design'],
+      experience: 8,
+      price: 75,
+      availability: 'Weekdays',
+      imageUrl: '/placeholder.svg',
+      bio: 'Experienced software engineer with a focus on frontend development and architecture.'
+    },
+    {
+      id: '2',
+      name: 'Michael Chen',
+      title: 'Product Manager',
+      company: 'Amazon',
+      rating: 4.7,
+      skills: ['Product Strategy', 'User Research', 'Agile', 'Growth'],
+      experience: 6,
+      price: 85,
+      availability: 'Evenings & Weekends',
+      imageUrl: '/placeholder.svg',
+      bio: 'Product manager with experience in consumer products and e-commerce platforms.'
+    },
+    {
+      id: '3',
+      name: 'Alex Rivera',
+      title: 'UX Designer',
+      company: 'Adobe',
+      rating: 4.8,
+      skills: ['UI/UX', 'Figma', 'User Testing', 'Design Systems'],
+      experience: 5,
+      price: 65,
+      availability: 'Flexible',
+      imageUrl: '/placeholder.svg',
+      bio: 'Design professional specializing in creating intuitive and accessible user experiences.'
+    },
+    {
+      id: '4',
+      name: 'Lisa Wong',
+      title: 'Data Scientist',
+      company: 'Netflix',
+      rating: 4.9,
+      skills: ['Python', 'Machine Learning', 'SQL', 'Data Visualization'],
+      experience: 7,
+      price: 90,
+      availability: 'Weekends',
+      imageUrl: '/placeholder.svg',
+      bio: 'Data scientist with expertise in predictive modeling and recommendation systems.'
+    },
+    {
+      id: '5',
+      name: 'James Wilson',
+      title: 'Blockchain Developer',
+      company: 'Ethereum Foundation',
+      rating: 4.6,
+      skills: ['Solidity', 'Smart Contracts', 'Web3', 'DeFi'],
+      experience: 4,
+      price: 95,
+      availability: 'Afternoons',
+      imageUrl: '/placeholder.svg',
+      bio: 'Blockchain developer specializing in DeFi applications and smart contract security.'
+    },
+    {
+      id: '6',
+      name: 'Emily Parker',
+      title: 'Engineering Manager',
+      company: 'Microsoft',
+      rating: 4.9,
+      skills: ['Leadership', 'Team Building', 'Career Development', 'Technical Architecture'],
+      experience: 10,
+      price: 100,
+      availability: 'Weekdays',
+      imageUrl: '/placeholder.svg',
+      bio: 'Engineering leader focused on building high-performing teams and mentoring junior engineers.'
     }
+  ];
+  
+  // Filter mentors based on search term
+  const filteredMentors = mentors.filter(mentor => 
+    mentor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    mentor.skills.some(skill => skill.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    mentor.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    mentor.company.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+  
+  // Handle bookmark toggle
+  const toggleBookmark = (mentorId: string) => {
+    setBookmarked(prev => ({
+      ...prev,
+      [mentorId]: !prev[mentorId]
+    }));
+    
+    toast({
+      title: bookmarked[mentorId] ? "Mentor removed from bookmarks" : "Mentor added to bookmarks",
+      description: bookmarked[mentorId] 
+        ? "You can add them back anytime." 
+        : "You can find them in your bookmarked mentors list.",
+    });
   };
   
-  // Clear all filters
-  const clearFilters = () => {
-    setSearchTerm('');
-    setSelectedCategory('');
-    setActiveFilters([]);
+  // Handle booking a session
+  const bookSession = (mentor: Mentor) => {
+    navigate('/dashboard/new-session', { 
+      state: { 
+        mentorId: mentor.id,
+        mentorName: mentor.name,
+        userRole: 'mentee'
+      } 
+    });
   };
   
-  // Filter mentors based on search term and selected category
-  const filteredMentors = allMentors.filter(mentor => {
-    const matchesSearch = searchTerm === '' || 
-      mentor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      mentor.skills.some(skill => skill.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      mentor.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      mentor.company.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesCategory = selectedCategory === '' || 
-      mentor.skills.some(skill => {
-        if (selectedCategory === 'Software Development') 
-          return ['React', 'JavaScript', 'Full-Stack Development', 'System Architecture'].includes(skill);
-        if (selectedCategory === 'Design')
-          return ['UI/UX Design', 'Design Systems'].includes(skill);
-        if (selectedCategory === 'Product Management')
-          return ['Product Strategy', 'Roadmapping', 'Agile Methodologies'].includes(skill);
-        if (selectedCategory === 'Marketing')
-          return ['Digital Marketing', 'Brand Strategy', 'Content Creation', 'Analytics'].includes(skill);
-        if (selectedCategory === 'Data Science')
-          return ['Machine Learning', 'Python', 'Data Analysis', 'AI Ethics'].includes(skill);
-        if (selectedCategory === 'Career Development')
-          return ['Career Growth', 'Mentorship'].includes(skill);
-        if (selectedCategory === 'Leadership')
-          return ['Leadership'].includes(skill);
-        return false;
-      });
-    
-    return matchesSearch && matchesCategory;
-  });
-
   return (
-    <div className="min-h-screen flex flex-col">
+    <>
       <Navbar />
-      
-      <main className="flex-1 py-8">
-        <div className="container mx-auto">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-            <div>
-              <h1 className="text-3xl font-bold">Find Mentors</h1>
-              <p className="text-muted-foreground mt-1">
-                Connect with experienced professionals who can help you grow
-              </p>
-            </div>
-            
-            {/* Search Bar */}
-            <div className="w-full md:w-auto min-w-[300px]">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                <input
-                  type="text"
-                  placeholder="Search by name, skill, or role..."
-                  className="w-full pl-10 pr-4 py-2 border rounded-md focus:ring-2 focus:ring-primary focus:border-primary"
-                  value={searchTerm}
-                  onChange={handleSearchChange}
-                />
-              </div>
-            </div>
-          </div>
-          
-          {/* Filters Section */}
-          <div className="mb-8">
-            <div className="flex flex-wrap gap-3 mb-4">
-              {categories.map((category) => (
-                <button
-                  key={category}
-                  className={`px-4 py-2 rounded-full text-sm font-medium ${
-                    selectedCategory === category 
-                      ? 'bg-primary text-primary-foreground' 
-                      : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
-                  }`}
-                  onClick={() => handleCategoryChange(category)}
-                >
-                  {category}
-                </button>
-              ))}
-            </div>
-            
-            <div className="flex flex-wrap gap-4 items-center">
-              <div className="flex items-center gap-2">
-                <Filter className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm font-medium">Additional Filters:</span>
-              </div>
-              
-              {['Available Weekends', 'Under $50/hr', 'Top Rated (4.8+)'].map((filter) => (
-                <button
-                  key={filter}
-                  className={`flex items-center gap-1 text-xs px-3 py-1.5 rounded-full border ${
-                    activeFilters.includes(filter) 
-                      ? 'bg-primary/10 border-primary text-primary' 
-                      : 'bg-card border-input text-muted-foreground'
-                  }`}
-                  onClick={() => toggleFilter(filter)}
-                >
-                  {filter}
-                  {activeFilters.includes(filter) && (
-                    <X className="h-3 w-3" />
-                  )}
-                </button>
-              ))}
-              
-              {(searchTerm || selectedCategory || activeFilters.length > 0) && (
-                <button 
-                  className="text-xs text-primary hover:underline"
-                  onClick={clearFilters}
-                >
-                  Clear all filters
-                </button>
-              )}
-            </div>
-          </div>
-          
-          {/* Results Count */}
-          <p className="text-sm text-muted-foreground mb-6">
-            Showing {filteredMentors.length} {filteredMentors.length === 1 ? 'mentor' : 'mentors'}
-            {searchTerm && ` for "${searchTerm}"`}
-            {selectedCategory && ` in ${selectedCategory}`}
+      <div className="container mx-auto px-4 py-12 max-w-7xl">
+        <div className="text-center mb-12">
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">Find Your Perfect Mentor</h1>
+          <p className="text-muted-foreground max-w-2xl mx-auto">
+            Connect with industry experts who can guide you through your career journey and help you achieve your goals.
           </p>
+        </div>
+        
+        {/* Search and filters */}
+        <div className="mb-10 space-y-6">
+          <div className="relative max-w-2xl mx-auto">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+            <Input
+              placeholder="Search by name, skill, or company..."
+              className="pl-10"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
           
-          {/* Mentors Grid */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredMentors.map((mentor) => (
-              <div key={mentor.id} className="bg-card border rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                <div className="p-6">
-                  <div className="flex justify-between">
-                    <div className="flex gap-4">
-                      <div className="w-16 h-16 rounded-full bg-secondary flex items-center justify-center text-xl font-bold">
-                        {mentor.name.split(' ').map(n => n[0]).join('')}
-                      </div>
-                      <div>
-                        <Link to={`/mentors/${mentor.id}`} className="font-semibold hover:text-primary">
-                          {mentor.name}
-                        </Link>
-                        <p className="text-sm text-muted-foreground">{mentor.title}</p>
-                        <p className="text-sm text-muted-foreground">{mentor.company}</p>
-                      </div>
-                    </div>
+          <div className="flex flex-wrap gap-4 justify-center">
+            <Card className="p-4 flex items-center gap-3">
+              <Filter className="h-5 w-5 text-muted-foreground" />
+              <Select defaultValue="all">
+                <SelectTrigger className="w-[180px] border-none shadow-none p-0 h-auto">
+                  <SelectValue placeholder="Expertise" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Expertise</SelectItem>
+                  <SelectItem value="software">Software Development</SelectItem>
+                  <SelectItem value="product">Product Management</SelectItem>
+                  <SelectItem value="design">Design</SelectItem>
+                  <SelectItem value="data">Data Science</SelectItem>
+                  <SelectItem value="leadership">Leadership</SelectItem>
+                </SelectContent>
+              </Select>
+            </Card>
+            
+            <Card className="p-4 flex items-center gap-3">
+              <Star className="h-5 w-5 text-muted-foreground" />
+              <Select defaultValue="4">
+                <SelectTrigger className="w-[180px] border-none shadow-none p-0 h-auto">
+                  <SelectValue placeholder="Rating" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="any">Any Rating</SelectItem>
+                  <SelectItem value="4.5">4.5+</SelectItem>
+                  <SelectItem value="4">4.0+</SelectItem>
+                  <SelectItem value="3.5">3.5+</SelectItem>
+                </SelectContent>
+              </Select>
+            </Card>
+            
+            <Card className="p-4 flex items-center gap-3">
+              <Briefcase className="h-5 w-5 text-muted-foreground" />
+              <Select defaultValue="any">
+                <SelectTrigger className="w-[180px] border-none shadow-none p-0 h-auto">
+                  <SelectValue placeholder="Experience" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="any">Any Experience</SelectItem>
+                  <SelectItem value="10">10+ years</SelectItem>
+                  <SelectItem value="5">5+ years</SelectItem>
+                  <SelectItem value="3">3+ years</SelectItem>
+                </SelectContent>
+              </Select>
+            </Card>
+          </div>
+        </div>
+        
+        {/* Mentors Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredMentors.map(mentor => (
+            <Card key={mentor.id} className="overflow-hidden">
+              <div className="relative pt-4 px-4">
+                <button 
+                  onClick={() => toggleBookmark(mentor.id)}
+                  className="absolute top-6 right-6 z-10"
+                >
+                  <Bookmark 
+                    className={`h-6 w-6 ${bookmarked[mentor.id] ? 'fill-primary text-primary' : 'text-muted-foreground'}`} 
+                  />
+                </button>
+                
+                <div className="flex flex-col items-center text-center mb-4">
+                  <div className="w-24 h-24 rounded-full bg-secondary mb-4 overflow-hidden">
+                    <img 
+                      src={mentor.imageUrl} 
+                      alt={mentor.name} 
+                      className="w-full h-full object-cover"
+                    />
                   </div>
+                  <h3 className="font-bold text-lg">{mentor.name}</h3>
+                  <p className="text-muted-foreground">{mentor.title}</p>
+                  <p className="text-sm text-muted-foreground">at {mentor.company}</p>
                   
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    {mentor.skills.slice(0, 3).map((skill, i) => (
-                      <span key={i} className="badge bg-secondary text-secondary-foreground">
-                        {skill}
-                      </span>
-                    ))}
-                    {mentor.skills.length > 3 && (
-                      <span className="badge bg-secondary text-secondary-foreground">
-                        +{mentor.skills.length - 3}
-                      </span>
-                    )}
-                  </div>
-                  
-                  <div className="mt-4 flex items-center justify-between">
-                    <div className="flex items-center">
-                      {[...Array(5)].map((_, i) => (
-                        <svg 
-                          key={i} 
-                          className={`w-4 h-4 ${i < Math.floor(mentor.rating) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`} 
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                        >
-                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                        </svg>
-                      ))}
-                      <span className="text-sm ml-1">{mentor.rating}</span>
-                      <span className="text-xs text-muted-foreground ml-1">({mentor.reviewCount})</span>
-                    </div>
-                    <span className="text-primary font-semibold">${mentor.hourlyRate}/hr</span>
-                  </div>
-                  
-                  <div className="mt-3 space-y-2 text-sm text-muted-foreground">
-                    <div className="flex items-center gap-2">
-                      <MapPin className="h-4 w-4" />
-                      <span>{mentor.location}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Clock className="h-4 w-4" />
-                      <span>{mentor.availability}</span>
-                    </div>
-                  </div>
-                  
-                  <div className="mt-4 pt-4 border-t flex justify-between">
-                    <Link 
-                      to={`/mentors/${mentor.id}`} 
-                      className="text-primary hover:underline"
-                    >
-                      View Profile
-                    </Link>
-                    <button className="btn-outline text-sm py-1 px-3">
-                      Book Session
-                    </button>
+                  <div className="flex items-center mt-2">
+                    <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
+                    <span className="ml-1 text-sm font-medium">{mentor.rating}</span>
                   </div>
                 </div>
               </div>
-            ))}
-          </div>
-          
-          {filteredMentors.length === 0 && (
-            <div className="text-center py-12">
-              <h3 className="text-xl font-medium mb-2">No mentors found</h3>
-              <p className="text-muted-foreground mb-6">Try adjusting your filters or search criteria</p>
-              <button 
-                className="btn-primary"
-                onClick={clearFilters}
-              >
-                Clear All Filters
-              </button>
-            </div>
-          )}
+              
+              <CardContent>
+                <div className="space-y-4">
+                  <div>
+                    <h4 className="text-sm font-medium mb-2">Skills & Expertise</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {mentor.skills.map((skill, i) => (
+                        <span 
+                          key={i} 
+                          className="bg-secondary text-xs px-2 py-1 rounded-full"
+                        >
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-2 text-sm">
+                    <div>
+                      <p className="text-muted-foreground">Experience</p>
+                      <p className="font-medium">{mentor.experience} years</p>
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground">Rate</p>
+                      <p className="font-medium">${mentor.price}/hour</p>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <p className="text-muted-foreground text-sm">Availability</p>
+                    <p className="font-medium text-sm">{mentor.availability}</p>
+                  </div>
+                </div>
+              </CardContent>
+              
+              <CardFooter className="flex flex-col gap-3">
+                <Button 
+                  className="w-full" 
+                  variant="outline"
+                  onClick={() => navigate(`/mentors/${mentor.id}`)}
+                >
+                  View Profile
+                </Button>
+                <Button 
+                  className="w-full flex items-center gap-1"
+                  onClick={() => bookSession(mentor)}
+                >
+                  <CalendarPlus className="h-4 w-4" />
+                  Book Session
+                </Button>
+              </CardFooter>
+            </Card>
+          ))}
         </div>
-      </main>
-      
+        
+        {filteredMentors.length === 0 && (
+          <div className="text-center py-12">
+            <h3 className="text-lg font-medium">No mentors found</h3>
+            <p className="text-muted-foreground mt-2">Try adjusting your search criteria</p>
+          </div>
+        )}
+      </div>
       <Footer />
-    </div>
+    </>
   );
 };
 
