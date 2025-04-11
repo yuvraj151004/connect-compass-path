@@ -27,7 +27,7 @@ const App = () => (
           <Route path="/login" element={<div className="min-h-screen bg-secondary/30 py-12"><AuthForm type="login" /></div>} />
           <Route path="/signup" element={<div className="min-h-screen bg-secondary/30 py-12"><AuthForm type="signup" /></div>} />
           <Route path="/dashboard/*" element={<Dashboard />} />
-          <Route path="/dashboard/schedule" element={<ScheduleMeeting />} />
+          {/* Remove this route as it's now handled through the Dashboard component and nesting */}
           <Route path="/mentors/:id" element={<MentorProfile />} />
           <Route path="/mentors" element={<FindMentors />} />
           <Route path="/forum" element={<Forum />} />

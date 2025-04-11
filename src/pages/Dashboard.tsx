@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import DashboardLayout from '../components/DashboardLayout';
 import { Calendar, MessageCircle, Users, User, Award, Clock, Bookmark, BarChart, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -8,39 +8,44 @@ import MyMentors from './dashboard/Mentors';
 import Schedule from './dashboard/Schedule';
 
 const DashboardHome = () => {
-  // This would normally come from your authentication context or user state
-  const userRole = 'mentee'; // or 'mentor'
+  // Get the role from location state
+  const location = useLocation();
+  const userRole = location.state?.userRole || 'mentee';
   
   // Some sample data for the dashboard
   const upcomingMeetings = [
     {
       id: '1',
-      mentor: 'Sarah Johnson',
+      mentor: userRole === 'mentor' ? 'Your Mentee: James Wilson' : 'Sarah Johnson',
       date: '2025-04-15T14:00:00',
       duration: 60, // minutes
-      topic: 'Career Development Discussion'
+      topic: userRole === 'mentor' ? 'Career Guidance Session' : 'Career Development Discussion'
     },
     {
       id: '2',
-      mentor: 'Michael Chen',
+      mentor: userRole === 'mentor' ? 'Your Mentee: Emily Parker' : 'Michael Chen',
       date: '2025-04-18T10:30:00',
       duration: 45, // minutes
-      topic: 'Technical Interview Preparation'
+      topic: userRole === 'mentor' ? 'Technical Skills Review' : 'Technical Interview Preparation'
     }
   ];
   
   const recentMessages = [
     {
       id: '1',
-      from: 'Sarah Johnson',
-      message: 'Looking forward to our session next week!',
+      from: userRole === 'mentor' ? 'James Wilson' : 'Sarah Johnson',
+      message: userRole === 'mentor' 
+        ? 'Thank you for the feedback on my resume!' 
+        : 'Looking forward to our session next week!',
       time: '2 hours ago',
       unread: true
     },
     {
       id: '2',
-      from: 'Michael Chen',
-      message: "I've shared some resources ahead of our meeting.",
+      from: userRole === 'mentor' ? 'Emily Parker' : 'Michael Chen',
+      message: userRole === 'mentor'
+        ? 'When can we schedule our next session?'
+        : "I've shared some resources ahead of our meeting.",
       time: '1 day ago',
       unread: false
     }
@@ -70,9 +75,13 @@ const DashboardHome = () => {
               : "Here's an overview of your mentoring activity."}
           </p>
         </div>
-        {userRole === 'mentee' && (
+        {userRole === 'mentee' ? (
           <Link to="/mentors" className="btn-primary shrink-0 self-start">
             Find More Mentors
+          </Link>
+        ) : (
+          <Link to="/dashboard/schedule" className="btn-primary shrink-0 self-start bg-mentor">
+            Schedule a Session
           </Link>
         )}
       </div>
@@ -90,13 +99,13 @@ const DashboardHome = () => {
             title: 'Upcoming Sessions',
             value: '3',
             icon: <Calendar className="h-5 w-5" />,
-            color: 'bg-mentee/10 text-mentee'
+            color: userRole === 'mentee' ? 'bg-mentee/10 text-mentee' : 'bg-mentor/10 text-mentor'
           },
           {
             title: 'Session Hours',
-            value: '12',
+            value: userRole === 'mentee' ? '12' : '24',
             icon: <Clock className="h-5 w-5" />,
-            color: 'bg-mentor/10 text-mentor'
+            color: userRole === 'mentee' ? 'bg-mentor/10 text-mentor' : 'bg-mentor/10 text-mentor'
           },
           {
             title: userRole === 'mentee' ? 'Badges Earned' : 'Rating',
@@ -138,7 +147,9 @@ const DashboardHome = () => {
                   <div key={meeting.id} className="flex gap-4 border-b pb-4 last:border-0 last:pb-0">
                     <div className="w-10 h-10 rounded-full bg-secondary flex-shrink-0 flex items-center justify-center">
                       <span className="font-medium text-sm">
-                        {meeting.mentor.split(' ').map(n => n[0]).join('')}
+                        {meeting.mentor.split(':').length > 1 
+                          ? meeting.mentor.split(':')[1].trim().split(' ').map(n => n[0]).join('')
+                          : meeting.mentor.split(' ').map(n => n[0]).join('')}
                       </span>
                     </div>
                     <div className="flex-1">
@@ -157,7 +168,7 @@ const DashboardHome = () => {
                           <Calendar className="h-3.5 w-3.5 mr-1" />
                           {formatDate(meeting.date)}
                         </span>
-                        <button className="inline-flex items-center text-sm bg-primary/10 text-primary rounded-md px-2 py-1 hover:bg-primary/20 transition-colors">
+                        <button className={`inline-flex items-center text-sm ${userRole === 'mentor' ? 'bg-mentor/10 text-mentor' : 'bg-primary/10 text-primary'} rounded-md px-2 py-1 hover:bg-primary/20 transition-colors`}>
                           Join Meeting
                         </button>
                         <button className="inline-flex items-center text-sm bg-secondary text-secondary-foreground rounded-md px-2 py-1 hover:bg-secondary/80 transition-colors">
@@ -230,32 +241,42 @@ const DashboardHome = () => {
         <div className="p-5 border-b">
           <h2 className="font-semibold text-lg flex items-center gap-2">
             <Bookmark className="h-5 w-5 text-primary" />
-            {userRole === 'mentee' ? 'Recommended Resources' : 'Quick Links for Mentors'}
+            {userRole === 'mentee' ? 'Recommended Resources' : 'Mentor Resources'}
           </h2>
         </div>
         <div className="p-5">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[
+            {userRole === 'mentee' ? [
               {
-                title: userRole === 'mentee' ? 'Interview Preparation Guide' : 'Mentor Best Practices',
-                description: userRole === 'mentee' 
-                  ? 'A comprehensive guide to ace your technical interviews.'
-                  : 'Tips and strategies for effective mentoring sessions.',
-                link: userRole === 'mentee' ? '/resources/interviews' : '/mentor-guide'
+                title: 'Interview Preparation Guide',
+                description: 'A comprehensive guide to ace your technical interviews.',
+                link: '/resources/interviews'
               },
               {
-                title: userRole === 'mentee' ? 'Resume Building Workshop' : 'Session Planning Tools',
-                description: userRole === 'mentee'
-                  ? 'Learn how to craft a resume that stands out to recruiters.'
-                  : 'Resources to help you plan effective mentorship sessions.',
-                link: userRole === 'mentee' ? '/resources/resume' : '/mentor-resources/planning'
+                title: 'Resume Building Workshop',
+                description: 'Learn how to craft a resume that stands out to recruiters.',
+                link: '/resources/resume'
               },
               {
-                title: userRole === 'mentee' ? 'Career Transition Stories' : 'Impact Tracking',
-                description: userRole === 'mentee'
-                  ? 'Success stories from mentees who changed careers successfully.'
-                  : 'Track and measure your impact as a mentor.',
-                link: userRole === 'mentee' ? '/success-stories' : '/mentor-impact'
+                title: 'Career Transition Stories',
+                description: 'Success stories from mentees who changed careers successfully.',
+                link: '/success-stories'
+              }
+            ] : [
+              {
+                title: 'Effective Mentoring Guide',
+                description: 'Best practices and strategies for impactful mentoring sessions.',
+                link: '/mentor-resources/guide'
+              },
+              {
+                title: 'Mentee Progress Tracker',
+                description: 'Tools to track and document mentee growth and achievements.',
+                link: '/mentor-resources/tracker'
+              },
+              {
+                title: 'Teaching Techniques',
+                description: 'Advanced techniques for explaining complex concepts effectively.',
+                link: '/mentor-resources/teaching'
               }
             ].map((resource, index) => (
               <div key={index} className="border rounded-md p-4 hover:border-primary/20 hover:shadow-sm transition-all">
@@ -275,8 +296,12 @@ const DashboardHome = () => {
 };
 
 const Dashboard = () => {
+  // Get the user role from location state
+  const location = useLocation();
+  const userRole = location.state?.userRole || 'mentee';
+  
   return (
-    <DashboardLayout userRole="mentee">
+    <DashboardLayout userRole={userRole}>
       <Routes>
         <Route path="/" element={<DashboardHome />} />
         <Route path="/mentors" element={<MyMentors />} />
