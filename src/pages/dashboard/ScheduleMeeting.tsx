@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
-import { Calendar as CalendarIcon, Clock, Users, Video, MessageSquare } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Calendar as CalendarIcon, Clock, Users, Video, VideoOff, Mic, MicOff, MessageSquare } from 'lucide-react';
 import { format } from 'date-fns';
 import { Calendar } from '@/components/ui/calendar';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -86,6 +87,52 @@ const ScheduleMeeting = () => {
       title: "Meeting scheduled successfully!",
       description: `Your ${meetingDetails.duration} ${meetingDetails.type} meeting is set for ${meetingDetails.date} at ${meetingDetails.time}.`,
     });
+
+    // Show additional instructions for video meetings
+    if (meetingType === 'video') {
+      toast({
+        title: "Video meeting info",
+        description: "A meeting link will be sent to your email. Click it at the scheduled time to join.",
+      });
+    }
+  };
+
+  // New: Render a preview of video call UI when video is selected
+  const renderVideoCallPreview = () => {
+    if (meetingType !== 'video') return null;
+
+    return (
+      <Card className="mt-6">
+        <CardHeader>
+          <CardTitle>Video Call Preview</CardTitle>
+          <CardDescription>This is how your video call will look</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="relative w-full aspect-video bg-gray-100 rounded-md overflow-hidden">
+            <div className="absolute inset-0 flex items-center justify-center">
+              <Video className="h-16 w-16 text-gray-300" />
+            </div>
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center space-x-4 bg-background/90 rounded-full px-4 py-2 shadow-md">
+              <button className="p-2 bg-gray-200 rounded-full hover:bg-gray-300">
+                <Mic className="h-5 w-5" />
+              </button>
+              <button className="p-2 bg-gray-200 rounded-full hover:bg-gray-300">
+                <VideoOff className="h-5 w-5" />
+              </button>
+              <button className="p-2 bg-red-500 text-white rounded-full hover:bg-red-600">
+                <span className="sr-only">End call</span>
+                <span className="block h-5 w-5">×</span>
+              </button>
+            </div>
+            <div className="absolute bottom-4 right-4 w-32 aspect-video bg-gray-200 rounded-md border-2 border-white shadow-md overflow-hidden">
+              <div className="absolute inset-0 flex items-center justify-center">
+                <Users className="h-8 w-8 text-gray-400" />
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
   };
 
   return (
@@ -111,7 +158,7 @@ const ScheduleMeeting = () => {
                       mode="single"
                       selected={date}
                       onSelect={setDate}
-                      className="rounded-md border"
+                      className="rounded-md border pointer-events-auto"
                       disabled={(date) => date < new Date()}
                     />
                   </div>
@@ -179,6 +226,8 @@ const ScheduleMeeting = () => {
                 </div>
               </CardContent>
             </Card>
+
+            {renderVideoCallPreview()}
 
             <Card>
               <CardHeader>
@@ -290,13 +339,9 @@ const ScheduleMeeting = () => {
 
             <Card>
               <CardHeader>
-                <CardTitle>Meeting Tips</CardTitle>
+                <CardTitle>Video Meeting Tips</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4 text-sm">
-                <div className="space-y-1">
-                  <p className="font-medium">Be prepared</p>
-                  <p className="text-muted-foreground">Have specific questions or topics ready to make the most of your time.</p>
-                </div>
                 <div className="space-y-1">
                   <p className="font-medium">Test your equipment</p>
                   <p className="text-muted-foreground">Ensure your camera and microphone are working before the meeting.</p>
@@ -304,6 +349,14 @@ const ScheduleMeeting = () => {
                 <div className="space-y-1">
                   <p className="font-medium">Find a quiet space</p>
                   <p className="text-muted-foreground">Choose a location with minimal background noise and distractions.</p>
+                </div>
+                <div className="space-y-1">
+                  <p className="font-medium">Check your connection</p>
+                  <p className="text-muted-foreground">Make sure you have a stable internet connection for smooth video.</p>
+                </div>
+                <div className="space-y-1">
+                  <p className="font-medium">Be on time</p>
+                  <p className="text-muted-foreground">Join a few minutes early to check your setup.</p>
                 </div>
               </CardContent>
             </Card>
