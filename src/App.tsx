@@ -16,6 +16,7 @@ import ScheduleMeeting from "./pages/dashboard/ScheduleMeeting";
 import VirtualMeetingRoom from "./pages/VirtualMeetingRoom";
 import NewSession from "./pages/dashboard/NewSession";
 import Messages from "./pages/dashboard/Messages";
+import Settings from "./pages/Settings";
 
 const queryClient = new QueryClient();
 
@@ -37,6 +38,7 @@ const App = () => (
           <Route path="/schedule-meeting" element={<ScheduleMeeting />} />
           <Route path="/virtual-meeting-room" element={<VirtualMeetingRoom />} />
           <Route path="/dashboard/new-session" element={<NewSession />} />
+          <Route path="/settings" element={<Settings />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

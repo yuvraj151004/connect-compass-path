@@ -6,11 +6,13 @@ import {
   MessageSquare, 
   Search, 
   Filter, 
-  ChevronRight 
+  ChevronRight,
+  MoreVertical 
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import DashboardLayout from '@/components/DashboardLayout';
 
 interface Mentor {
@@ -129,7 +131,7 @@ const MyMentors = () => {
                 <TableHead className="hidden md:table-cell">Expertise</TableHead>
                 <TableHead className="hidden md:table-cell">Next Session</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead className="w-[100px]">Actions</TableHead>
+                <TableHead className="w-[70px]">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -178,10 +180,31 @@ const MyMentors = () => {
                     </span>
                   </TableCell>
                   <TableCell>
-                    <div className="flex items-center gap-2">
-                      <Link to={`/dashboard/mentors/${mentor.id}`} className="btn-outline p-2 h-auto">
-                        <ChevronRight className="h-4 w-4" />
-                      </Link>
+                    <div className="flex justify-end">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger className="focus:outline-none">
+                          <div className="p-2 rounded-md hover:bg-secondary">
+                            <MoreVertical className="h-4 w-4" />
+                          </div>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="bg-popover border shadow-md">
+                          <DropdownMenuItem asChild>
+                            <Link to={`/dashboard/mentors/${mentor.id}`} className="cursor-pointer">
+                              View Profile
+                            </Link>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem asChild>
+                            <Link to={`/dashboard/schedule/${mentor.id}`} className="cursor-pointer">
+                              Schedule Session
+                            </Link>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem asChild>
+                            <Link to={`/dashboard/messages/${mentor.id}`} className="cursor-pointer">
+                              Send Message
+                            </Link>
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </div>
                   </TableCell>
                 </TableRow>

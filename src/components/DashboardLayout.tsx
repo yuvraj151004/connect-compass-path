@@ -1,6 +1,6 @@
 
 import React, { ReactNode, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
   Home, 
   Calendar, 
@@ -14,6 +14,7 @@ import {
   User, 
   Briefcase
 } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -22,6 +23,8 @@ interface DashboardLayoutProps {
 
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, userRole = 'mentee' }) => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { toast } = useToast();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const menteeNavItems = [
@@ -44,6 +47,20 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, userRole = 
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  const handleLogout = () => {
+    // Clear user data from local storage
+    localStorage.removeItem('userRole');
+    
+    // Show success toast
+    toast({
+      title: "Logged out successfully",
+      description: "You have been logged out from your account.",
+    });
+    
+    // Redirect to homepage
+    navigate('/');
   };
 
   const roleColor = userRole === 'mentor' ? 'bg-mentor text-white' : 'bg-mentee text-white';
@@ -109,14 +126,18 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, userRole = 
             <div className="border-t my-4"></div>
             <Link
               to="/settings"
-              className="flex items-center gap-3 px-3 py-2 rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
+              className={`flex items-center gap-3 px-3 py-2 rounded-md transition-colors ${
+                location.pathname === '/settings'
+                  ? 'bg-primary text-primary-foreground'
+                  : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
+              }`}
             >
               <Settings className="h-5 w-5" />
               <span>Settings</span>
             </Link>
             <button
               className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
-              onClick={() => console.log('Logout clicked')}
+              onClick={handleLogout}
             >
               <LogOut className="h-5 w-5" />
               <span>Logout</span>
