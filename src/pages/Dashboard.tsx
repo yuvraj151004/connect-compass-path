@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate, Routes, Route } from 'react-router-dom';
 import { Compass, Users, CalendarClock, MessageSquare, Settings, Bell, ChevronDown, LogOut } from 'lucide-react';
@@ -14,7 +15,9 @@ import NewSession from './dashboard/NewSession';
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const [userRole, setUserRole] = useState(localStorage.getItem('userRole') || 'mentee');
+  const [userRole, setUserRole] = useState<'mentee' | 'mentor'>(
+    (localStorage.getItem('userRole') as 'mentee' | 'mentor') || 'mentee'
+  );
 
   // Mock user data
   const user = {
@@ -36,7 +39,7 @@ const Dashboard = () => {
           <Route path="/mentors" element={<Mentors />} />
           <Route path="/schedule" element={<Schedule />} />
           <Route path="/messages" element={<Messages />} />
-          {/* <Route path="/new-session" element={<NewSession />} /> */}
+          <Route path="/new-session" element={<NewSession />} />
         </Routes>
       </div>
     </DashboardLayout>

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { 
   Calendar as CalendarIcon, 
@@ -10,6 +9,7 @@ import {
   MapPin,
   MessageSquare
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
@@ -30,11 +30,9 @@ interface Session {
 }
 
 const Schedule = () => {
-  // For a real app, you'd use a proper date picker and calendar library
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const [view, setView] = useState<'week' | 'month' | 'list'>('week');
   
-  // Sample data - in a real app, this would come from an API
   const sessions: Session[] = [
     {
       id: '1',
@@ -95,7 +93,6 @@ const Schedule = () => {
     }
   ];
 
-  // Format date for display
   const formatDate = (dateString: string) => {
     const options: Intl.DateTimeFormatOptions = { 
       weekday: 'short', 
@@ -105,7 +102,6 @@ const Schedule = () => {
     return new Date(dateString).toLocaleString('en-US', options);
   };
 
-  // Navigate between weeks/months
   const navigateDate = (direction: 'prev' | 'next') => {
     const newDate = new Date(currentDate);
     if (view === 'week') {
@@ -116,7 +112,6 @@ const Schedule = () => {
     setCurrentDate(newDate);
   };
 
-  // Get session type icon
   const getSessionTypeIcon = (type: Session['type']) => {
     switch (type) {
       case 'video':
@@ -130,13 +125,10 @@ const Schedule = () => {
     }
   };
 
-  // Filter sessions based on view
   const getFilteredSessions = () => {
-    // For a real app, you would filter based on the current date and view
     return sessions.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
   };
 
-  // Get status badge style
   const getStatusBadge = (status: Session['status']) => {
     switch (status) {
       case 'upcoming':
@@ -158,12 +150,11 @@ const Schedule = () => {
             <h1 className="text-2xl font-bold">Schedule</h1>
             <p className="text-muted-foreground">Manage your mentoring sessions</p>
           </div>
-          <button className="btn-primary shrink-0 self-start">
+          <Link to="/dashboard/new-session" className="btn-primary shrink-0 self-start bg-primary text-primary-foreground hover:bg-primary/90 py-2 px-4 rounded-md transition-colors inline-block">
             Schedule New Session
-          </button>
+          </Link>
         </div>
 
-        {/* Calendar controls */}
         <div className="bg-card border rounded-lg shadow-sm overflow-hidden">
           <div className="p-4 border-b flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex items-center gap-2">
@@ -211,7 +202,6 @@ const Schedule = () => {
             </div>
           </div>
 
-          {/* Simple placeholder for calendar view - in a real app, use a proper calendar component */}
           {view !== 'list' && (
             <div className="p-4 text-center border-b">
               <p className="text-muted-foreground">
@@ -223,7 +213,6 @@ const Schedule = () => {
             </div>
           )}
 
-          {/* Session list */}
           <div className="p-4">
             <h3 className="font-medium mb-3 flex items-center gap-2">
               <CalendarIcon className="h-4 w-4 text-primary" />
@@ -310,7 +299,6 @@ const Schedule = () => {
           </div>
         </div>
 
-        {/* Quick Actions */}
         <div className="grid md:grid-cols-3 gap-4">
           {[
             {
@@ -332,8 +320,9 @@ const Schedule = () => {
               link: '/mentors'
             }
           ].map((action, index) => (
-            <div 
+            <Link 
               key={index} 
+              to={action.link}
               className="bg-card border rounded-lg p-4 hover:border-primary/20 hover:shadow-sm transition-all"
             >
               <div className="flex items-start gap-3">
@@ -345,7 +334,7 @@ const Schedule = () => {
                   <p className="text-sm text-muted-foreground mt-1">{action.description}</p>
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>
