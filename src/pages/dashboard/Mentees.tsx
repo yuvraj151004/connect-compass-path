@@ -55,6 +55,32 @@ const menteeData = [
 const Mentees = () => {
   const navigate = useNavigate();
 
+  // Action handlers
+  const handleViewProfile = (menteeId: number) => {
+    // In a real app, navigate to the mentee profile page
+    // For now, we'll just log it
+    console.log(`View profile for mentee ${menteeId}`);
+  };
+
+  const handleScheduleSession = (menteeId: number, menteeName: string) => {
+    navigate('/dashboard/new-session', { 
+      state: { 
+        menteeId,
+        menteeName,
+        userRole: 'mentor'
+      } 
+    });
+  };
+
+  const handleSendMessage = (menteeId: number) => {
+    navigate('/dashboard/messages', {
+      state: { 
+        messageId: String(menteeId),
+        userRole: 'mentor'
+      }
+    });
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
@@ -126,16 +152,16 @@ const Mentees = () => {
                       <span className="sr-only">Open menu</span>
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={() => navigate('/dashboard/new-session')}>
+                  <DropdownMenuContent align="end" className="z-50">
+                    <DropdownMenuItem onClick={() => handleScheduleSession(mentee.id, mentee.name)}>
                       <Calendar className="mr-2 h-4 w-4" />
                       Schedule Session
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate('/dashboard/messages')}>
+                    <DropdownMenuItem onClick={() => handleSendMessage(mentee.id)}>
                       <MessageSquare className="mr-2 h-4 w-4" />
                       Send Message
                     </DropdownMenuItem>
-                    <DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleViewProfile(mentee.id)}>
                       <File className="mr-2 h-4 w-4" />
                       View Profile
                     </DropdownMenuItem>
@@ -159,10 +185,20 @@ const Mentees = () => {
             <CardFooter className="p-4 pt-0 flex justify-between">
               <span className="text-xs text-muted-foreground">Last session: {mentee.lastSession}</span>
               <div className="flex gap-2">
-                <Button variant="ghost" size="sm" className="h-8 px-2">
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="h-8 px-2"
+                  onClick={() => handleSendMessage(mentee.id)}
+                >
                   <MessageSquare className="h-4 w-4" />
                 </Button>
-                <Button variant="ghost" size="sm" className="h-8 px-2">
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="h-8 px-2"
+                  onClick={() => handleScheduleSession(mentee.id, mentee.name)}
+                >
                   <Calendar className="h-4 w-4" />
                 </Button>
               </div>

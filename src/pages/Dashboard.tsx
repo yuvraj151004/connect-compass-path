@@ -32,6 +32,7 @@ const Dashboard = () => {
           <Route path="/schedule" element={<Schedule />} />
           <Route path="/messages" element={<Messages />} />
           <Route path="/new-session" element={<NewSession />} />
+          {/* Add routes for viewing profiles if needed */}
         </Routes>
       </div>
     </DashboardLayout>

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { 
   Users, 
@@ -9,7 +8,7 @@ import {
   ChevronRight,
   MoreVertical 
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
@@ -26,6 +25,8 @@ interface Mentor {
 }
 
 const MyMentors = () => {
+  const navigate = useNavigate();
+  
   // Sample data - in a real app, this would come from an API
   const mentors: Mentor[] = [
     {
@@ -92,6 +93,23 @@ const MyMentors = () => {
       default:
         return 'bg-secondary text-secondary-foreground';
     }
+  };
+
+  // Action handlers
+  const handleViewProfile = (mentorId: string) => {
+    navigate(`/mentors/${mentorId}`);
+  };
+
+  const handleScheduleSession = (mentorId: string, mentorName: string) => {
+    navigate('/dashboard/new-session', {
+      state: { mentorId, mentorName, userRole: 'mentee' }
+    });
+  };
+
+  const handleSendMessage = (mentorId: string) => {
+    navigate('/dashboard/messages', {
+      state: { messageId: mentorId, userRole: 'mentee' }
+    });
   };
 
   return (
@@ -187,21 +205,15 @@ const MyMentors = () => {
                             <MoreVertical className="h-4 w-4" />
                           </div>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="bg-popover border shadow-md">
-                          <DropdownMenuItem asChild>
-                            <Link to={`/dashboard/mentors/${mentor.id}`} className="cursor-pointer">
-                              View Profile
-                            </Link>
+                        <DropdownMenuContent align="end" className="bg-popover border shadow-md z-50">
+                          <DropdownMenuItem onClick={() => handleViewProfile(mentor.id)} className="cursor-pointer">
+                            View Profile
                           </DropdownMenuItem>
-                          <DropdownMenuItem asChild>
-                            <Link to={`/dashboard/schedule/${mentor.id}`} className="cursor-pointer">
-                              Schedule Session
-                            </Link>
+                          <DropdownMenuItem onClick={() => handleScheduleSession(mentor.id, mentor.name)} className="cursor-pointer">
+                            Schedule Session
                           </DropdownMenuItem>
-                          <DropdownMenuItem asChild>
-                            <Link to={`/dashboard/messages/${mentor.id}`} className="cursor-pointer">
-                              Send Message
-                            </Link>
+                          <DropdownMenuItem onClick={() => handleSendMessage(mentor.id)} className="cursor-pointer">
+                            Send Message
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>

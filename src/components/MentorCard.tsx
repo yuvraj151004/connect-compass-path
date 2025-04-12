@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Calendar, MessageSquare } from 'lucide-react';
 
 interface MentorCardProps {
@@ -26,6 +26,31 @@ const MentorCard: React.FC<MentorCardProps> = ({
   reviewCount,
   featured = false
 }) => {
+  const navigate = useNavigate();
+  
+  const handleViewProfile = () => {
+    navigate(`/mentors/${id}`);
+  };
+  
+  const handleScheduleSession = () => {
+    navigate('/dashboard/new-session', {
+      state: {
+        mentorId: id,
+        mentorName: name,
+        userRole: 'mentee'
+      }
+    });
+  };
+  
+  const handleSendMessage = () => {
+    navigate('/dashboard/messages', {
+      state: {
+        messageId: id,
+        userRole: 'mentee'
+      }
+    });
+  };
+  
   return (
     <div className={`bg-card rounded-lg shadow-sm overflow-hidden card-hover
       ${featured ? 'border-2 border-primary/20 shadow-md' : 'border border-border'}`}>
@@ -89,19 +114,19 @@ const MentorCard: React.FC<MentorCardProps> = ({
           </div>
           
           <div className="flex gap-2">
-            <Link 
-              to={`/mentors/${id}`} 
+            <button 
+              onClick={handleViewProfile}
               className="btn-outline flex-1 flex items-center justify-center gap-1 text-sm py-1.5"
             >
               View Profile
-            </Link>
-            <Link 
-              to={`/schedule/${id}`} 
+            </button>
+            <button 
+              onClick={handleScheduleSession}
               className="btn-primary flex-1 flex items-center justify-center gap-1 text-sm py-1.5"
             >
               <Calendar className="h-4 w-4" />
               Schedule
-            </Link>
+            </button>
           </div>
         </div>
       </div>
