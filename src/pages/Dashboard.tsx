@@ -1,16 +1,11 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Routes, Route } from 'react-router-dom';
-import { Compass, Users, CalendarClock, MessageSquare, Settings, Bell, ChevronDown, LogOut } from 'lucide-react';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import DashboardLayout from '@/components/DashboardLayout';
 import Schedule from './dashboard/Schedule';
 import Messages from './dashboard/Messages';
 import Mentors from './dashboard/Mentors';
+import Mentees from './dashboard/Mentees';
 import NewSession from './dashboard/NewSession';
 
 const Dashboard = () => {
@@ -19,24 +14,21 @@ const Dashboard = () => {
     (localStorage.getItem('userRole') as 'mentee' | 'mentor') || 'mentee'
   );
 
-  // Mock user data
-  const user = {
-    name: "John Doe",
-    email: "john.doe@example.com",
-    avatarUrl: "/placeholder.svg",
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem('userRole');
-    navigate('/');
-  };
+  useEffect(() => {
+    // Check if userRole is present in localStorage on component mount
+    const storedRole = localStorage.getItem('userRole') as 'mentee' | 'mentor';
+    if (storedRole) {
+      setUserRole(storedRole);
+    }
+  }, []);
 
   return (
     <DashboardLayout userRole={userRole}>
       <div className="space-y-6">
         <Routes>
-          <Route path="/" element={<Mentors />} />
+          <Route path="/" element={userRole === 'mentor' ? <Mentees /> : <Mentors />} />
           <Route path="/mentors" element={<Mentors />} />
+          <Route path="/mentees" element={<Mentees />} />
           <Route path="/schedule" element={<Schedule />} />
           <Route path="/messages" element={<Messages />} />
           <Route path="/new-session" element={<NewSession />} />

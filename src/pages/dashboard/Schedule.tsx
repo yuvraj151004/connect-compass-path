@@ -1,344 +1,276 @@
+
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   Calendar as CalendarIcon, 
   Clock, 
-  Users, 
-  ChevronLeft, 
-  ChevronRight, 
   Video, 
-  MapPin,
-  MessageSquare
+  MoreHorizontal, 
+  ChevronLeft, 
+  ChevronRight,
+  User,
+  Briefcase
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import DashboardLayout from '@/components/DashboardLayout';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-
-interface Session {
-  id: string;
-  mentor: {
-    id: string;
-    name: string;
-  };
-  date: string;
-  startTime: string;
-  endTime: string;
-  duration: number; // in minutes
-  topic: string;
-  type: 'video' | 'in-person' | 'chat';
-  status: 'upcoming' | 'completed' | 'cancelled';
-  notes?: string;
-}
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const Schedule = () => {
-  const [currentDate, setCurrentDate] = useState<Date>(new Date());
-  const [view, setView] = useState<'week' | 'month' | 'list'>('week');
+  const navigate = useNavigate();
+  const [userRole, setUserRole] = useState<'mentee' | 'mentor'>(
+    (localStorage.getItem('userRole') as 'mentee' | 'mentor') || 'mentee'
+  );
   
-  const sessions: Session[] = [
+  // Sample upcoming sessions data
+  const upcomingSessions = [
     {
-      id: '1',
-      mentor: {
-        id: '1',
-        name: 'Sarah Johnson'
-      },
-      date: '2025-04-15',
-      startTime: '14:00',
-      endTime: '15:00',
-      duration: 60,
-      topic: 'Career Development Discussion',
+      id: 1,
+      title: 'Career Development Discussion',
+      date: 'Today',
+      time: '3:00 PM - 4:00 PM',
+      participant: userRole === 'mentor' ? 'Emma Johnson' : 'Dr. Anna Rodriguez',
+      avatar: '/placeholder.svg',
       type: 'video',
-      status: 'upcoming'
+      status: 'upcoming',
     },
     {
-      id: '2',
-      mentor: {
-        id: '2',
-        name: 'Michael Chen'
-      },
-      date: '2025-04-18',
-      startTime: '10:30',
-      endTime: '11:15',
-      duration: 45,
-      topic: 'Technical Interview Preparation',
+      id: 2,
+      title: 'Code Review Session',
+      date: 'Tomorrow',
+      time: '10:30 AM - 11:30 AM',
+      participant: userRole === 'mentor' ? 'David Martinez' : 'James Wilson, Sr. Dev',
+      avatar: '/placeholder.svg',
       type: 'video',
-      status: 'upcoming'
+      status: 'upcoming',
     },
     {
-      id: '3',
-      mentor: {
-        id: '1',
-        name: 'Sarah Johnson'
-      },
-      date: '2025-04-22',
-      startTime: '13:00',
-      endTime: '14:00',
-      duration: 60,
-      topic: 'Resume Review Session',
-      type: 'video',
-      status: 'upcoming'
-    },
-    {
-      id: '4',
-      mentor: {
-        id: '3',
-        name: 'Alex Rivera'
-      },
-      date: '2025-04-05',
-      startTime: '11:00',
-      endTime: '12:00',
-      duration: 60,
-      topic: 'Portfolio Critique',
+      id: 3,
+      title: 'Project Planning',
+      date: 'Apr 15, 2025',
+      time: '2:00 PM - 3:00 PM',
+      participant: userRole === 'mentor' ? 'Sarah Wilson' : 'Maria Garcia, PM',
+      avatar: '/placeholder.svg',
       type: 'in-person',
-      status: 'completed',
-      notes: 'Discussed improvements for the UX portfolio case studies.'
-    }
+      status: 'upcoming',
+    },
   ];
-
-  const formatDate = (dateString: string) => {
-    const options: Intl.DateTimeFormatOptions = { 
-      weekday: 'short', 
-      month: 'short', 
-      day: 'numeric'
-    };
-    return new Date(dateString).toLocaleString('en-US', options);
-  };
-
-  const navigateDate = (direction: 'prev' | 'next') => {
-    const newDate = new Date(currentDate);
-    if (view === 'week') {
-      newDate.setDate(newDate.getDate() + (direction === 'next' ? 7 : -7));
-    } else if (view === 'month') {
-      newDate.setMonth(newDate.getMonth() + (direction === 'next' ? 1 : -1));
-    }
-    setCurrentDate(newDate);
-  };
-
-  const getSessionTypeIcon = (type: Session['type']) => {
-    switch (type) {
-      case 'video':
-        return <Video className="h-4 w-4" />;
-      case 'in-person':
-        return <MapPin className="h-4 w-4" />;
-      case 'chat':
-        return <MessageSquare className="h-4 w-4" />;
-      default:
-        return <Video className="h-4 w-4" />;
-    }
-  };
-
-  const getFilteredSessions = () => {
-    return sessions.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-  };
-
-  const getStatusBadge = (status: Session['status']) => {
-    switch (status) {
-      case 'upcoming':
-        return 'bg-primary/10 text-primary';
-      case 'completed':
-        return 'bg-success/10 text-success';
-      case 'cancelled':
-        return 'bg-destructive/10 text-destructive';
-      default:
-        return 'bg-secondary text-secondary-foreground';
-    }
-  };
-
+  
+  // Sample past sessions data
+  const pastSessions = [
+    {
+      id: 4,
+      title: 'Interview Preparation',
+      date: 'Apr 5, 2025',
+      time: '11:00 AM - 12:00 PM',
+      participant: userRole === 'mentor' ? 'Michael Chen' : 'Dr. Anna Rodriguez',
+      avatar: '/placeholder.svg',
+      type: 'video',
+      status: 'completed',
+    },
+    {
+      id: 5,
+      title: 'Technical Skills Review',
+      date: 'Mar 28, 2025',
+      time: '3:30 PM - 4:30 PM',
+      participant: userRole === 'mentor' ? 'Emma Johnson' : 'James Wilson, Sr. Dev',
+      avatar: '/placeholder.svg',
+      type: 'video',
+      status: 'completed',
+    },
+  ];
+  
   return (
-    <DashboardLayout userRole="mentee">
-      <div className="space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-bold">Schedule</h1>
-            <p className="text-muted-foreground">Manage your mentoring sessions</p>
-          </div>
-          <Link to="/dashboard/new-session" className="btn-primary shrink-0 self-start bg-primary text-primary-foreground hover:bg-primary/90 py-2 px-4 rounded-md transition-colors inline-block">
-            Schedule New Session
-          </Link>
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">Schedule</h1>
+          <p className="text-muted-foreground">
+            {userRole === 'mentor' 
+              ? 'Manage your upcoming mentoring sessions and view past sessions' 
+              : 'Schedule and manage your sessions with mentors'}
+          </p>
         </div>
-
-        <div className="bg-card border rounded-lg shadow-sm overflow-hidden">
-          <div className="p-4 border-b flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div className="flex items-center gap-2">
-              <button 
-                onClick={() => navigateDate('prev')} 
-                className="p-1 rounded-md hover:bg-secondary transition-colors"
-              >
-                <ChevronLeft className="h-5 w-5" />
-              </button>
-              <h2 className="text-lg font-semibold">
-                {currentDate.toLocaleString('default', { month: 'long', year: 'numeric' })}
-              </h2>
-              <button 
-                onClick={() => navigateDate('next')} 
-                className="p-1 rounded-md hover:bg-secondary transition-colors"
-              >
-                <ChevronRight className="h-5 w-5" />
-              </button>
-            </div>
-            <div className="flex items-center bg-secondary rounded-lg p-1">
-              <button 
-                onClick={() => setView('week')} 
-                className={`px-3 py-1 rounded-md text-sm ${
-                  view === 'week' ? 'bg-background shadow-sm' : 'hover:bg-secondary/80'
-                }`}
-              >
-                Week
-              </button>
-              <button 
-                onClick={() => setView('month')} 
-                className={`px-3 py-1 rounded-md text-sm ${
-                  view === 'month' ? 'bg-background shadow-sm' : 'hover:bg-secondary/80'
-                }`}
-              >
-                Month
-              </button>
-              <button 
-                onClick={() => setView('list')} 
-                className={`px-3 py-1 rounded-md text-sm ${
-                  view === 'list' ? 'bg-background shadow-sm' : 'hover:bg-secondary/80'
-                }`}
-              >
-                List
-              </button>
-            </div>
-          </div>
-
-          {view !== 'list' && (
-            <div className="p-4 text-center border-b">
-              <p className="text-muted-foreground">
-                {view === 'week' ? 'Weekly' : 'Monthly'} calendar view would be displayed here.
-              </p>
-              <p className="text-sm mt-1">
-                For a production app, use a library like react-big-calendar or @fullcalendar/react
-              </p>
-            </div>
-          )}
-
-          <div className="p-4">
-            <h3 className="font-medium mb-3 flex items-center gap-2">
-              <CalendarIcon className="h-4 w-4 text-primary" />
-              {view === 'list' ? 'All' : 'Upcoming'} Sessions
-            </h3>
-
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Session</TableHead>
-                  <TableHead className="hidden md:table-cell">Mentor</TableHead>
-                  <TableHead className="hidden md:table-cell">Date & Time</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {getFilteredSessions().map((session) => (
-                  <TableRow key={session.id}>
-                    <TableCell>
-                      <div className="flex items-center gap-3">
-                        <div className={`p-2 rounded-full ${
-                          session.type === 'video' ? 'bg-primary/10 text-primary' :
-                          session.type === 'in-person' ? 'bg-success/10 text-success' :
-                          'bg-secondary text-secondary-foreground'
-                        }`}>
-                          {getSessionTypeIcon(session.type)}
-                        </div>
-                        <div>
-                          <div className="font-medium">{session.topic}</div>
-                          <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                            <Clock className="h-3 w-3" />
-                            <span>{session.duration} min</span>
-                          </div>
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell className="hidden md:table-cell">
-                      <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center">
-                          <span className="font-medium text-xs">
-                            {session.mentor.name.split(' ').map(n => n[0]).join('')}
-                          </span>
-                        </div>
-                        <span>{session.mentor.name}</span>
-                      </div>
-                    </TableCell>
-                    <TableCell className="hidden md:table-cell">
-                      <div className="flex flex-col text-sm">
-                        <span>{formatDate(session.date)}</span>
-                        <span className="text-muted-foreground">
-                          {session.startTime} - {session.endTime}
-                        </span>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <span className={`badge ${getStatusBadge(session.status)}`}>
-                        {session.status.charAt(0).toUpperCase() + session.status.slice(1)}
-                      </span>
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        {session.status === 'upcoming' && (
-                          <>
-                            <button className="btn-primary text-xs py-1 px-2 h-auto">
-                              Join
-                            </button>
-                            <button className="btn-outline text-xs py-1 px-2 h-auto">
-                              Reschedule
-                            </button>
-                          </>
-                        )}
-                        {session.status === 'completed' && (
-                          <button className="btn-outline text-xs py-1 px-2 h-auto">
-                            View Notes
-                          </button>
-                        )}
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        </div>
-
-        <div className="grid md:grid-cols-3 gap-4">
-          {[
-            {
-              title: 'My Mentors',
-              description: 'View and manage your mentor relationships',
-              icon: <Users className="h-5 w-5 text-primary" />,
-              link: '/dashboard/mentors'
-            },
-            {
-              title: 'Past Sessions',
-              description: 'Review notes and recordings from past sessions',
-              icon: <Clock className="h-5 w-5 text-primary" />,
-              link: '/dashboard/history'
-            },
-            {
-              title: 'Find New Mentors',
-              description: 'Browse our mentor directory to find new mentors',
-              icon: <Users className="h-5 w-5 text-primary" />,
-              link: '/mentors'
-            }
-          ].map((action, index) => (
-            <Link 
-              key={index} 
-              to={action.link}
-              className="bg-card border rounded-lg p-4 hover:border-primary/20 hover:shadow-sm transition-all"
-            >
-              <div className="flex items-start gap-3">
-                <div className="p-2 rounded-full bg-primary/10">
-                  {action.icon}
-                </div>
-                <div>
-                  <h3 className="font-medium">{action.title}</h3>
-                  <p className="text-sm text-muted-foreground mt-1">{action.description}</p>
-                </div>
-              </div>
-            </Link>
-          ))}
+        <Button 
+          onClick={() => navigate('/dashboard/new-session')}
+          className={userRole === 'mentor' ? 'bg-mentor text-white' : 'bg-mentee text-white'}
+        >
+          <CalendarIcon className="mr-2 h-4 w-4" />
+          New Session
+        </Button>
+      </div>
+      
+      <div className="flex items-center justify-between">
+        <h2 className="text-xl font-semibold">April 2025</h2>
+        <div className="flex gap-2">
+          <Button variant="outline" size="icon">
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+          <Button variant="outline" size="icon">
+            <ChevronRight className="h-4 w-4" />
+          </Button>
         </div>
       </div>
-    </DashboardLayout>
+      
+      <Tabs defaultValue="upcoming" className="w-full">
+        <TabsList className="grid w-full grid-cols-2 mb-4">
+          <TabsTrigger value="upcoming">Upcoming</TabsTrigger>
+          <TabsTrigger value="past">Past Sessions</TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="upcoming" className="space-y-4">
+          {upcomingSessions.length > 0 ? (
+            upcomingSessions.map((session) => (
+              <Card key={session.id} className="overflow-hidden">
+                <CardHeader className="p-4 pb-0">
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <Badge variant={session.date === 'Today' ? 'destructive' : 'outline'}>
+                          {session.date}
+                        </Badge>
+                        {session.type === 'video' && (
+                          <Badge variant="secondary">
+                            <Video className="mr-1 h-3 w-3" />
+                            Video
+                          </Badge>
+                        )}
+                        {session.type === 'in-person' && (
+                          <Badge variant="secondary">In-Person</Badge>
+                        )}
+                      </div>
+                      <CardTitle className="text-lg mt-2">{session.title}</CardTitle>
+                    </div>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon" className="h-8 w-8">
+                          <MoreHorizontal className="h-4 w-4" />
+                          <span className="sr-only">Open menu</span>
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={() => navigate('/virtual-meeting-room')}>
+                          Join Meeting
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>Reschedule</DropdownMenuItem>
+                        <DropdownMenuItem>Cancel Session</DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                </CardHeader>
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3">
+                    <Clock className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-sm">{session.time}</span>
+                  </div>
+                  <div className="flex items-center gap-3 mt-2">
+                    {userRole === 'mentor' ? (
+                      <Briefcase className="h-4 w-4 text-muted-foreground" />
+                    ) : (
+                      <User className="h-4 w-4 text-muted-foreground" />
+                    )}
+                    <div className="flex items-center gap-2">
+                      <Avatar className="h-6 w-6">
+                        <AvatarImage src={session.avatar} alt={session.participant} />
+                        <AvatarFallback>{session.participant.substring(0, 2)}</AvatarFallback>
+                      </Avatar>
+                      <span className="text-sm">{session.participant}</span>
+                    </div>
+                  </div>
+                </CardContent>
+                <CardFooter className="p-4 pt-0 flex justify-end gap-2">
+                  {session.date === 'Today' && (
+                    <Button size="sm" onClick={() => navigate('/virtual-meeting-room')}>
+                      <Video className="mr-2 h-4 w-4" />
+                      Join Session
+                    </Button>
+                  )}
+                </CardFooter>
+              </Card>
+            ))
+          ) : (
+            <Card>
+              <CardContent className="p-8 text-center">
+                <p className="text-muted-foreground">No upcoming sessions scheduled.</p>
+                <Button 
+                  className="mt-4"
+                  onClick={() => navigate('/dashboard/new-session')}
+                >
+                  Schedule New Session
+                </Button>
+              </CardContent>
+            </Card>
+          )}
+        </TabsContent>
+        
+        <TabsContent value="past" className="space-y-4">
+          {pastSessions.map((session) => (
+            <Card key={session.id}>
+              <CardHeader className="p-4 pb-0">
+                <div className="flex justify-between items-start">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <Badge variant="outline">{session.date}</Badge>
+                      {session.type === 'video' && (
+                        <Badge variant="secondary">
+                          <Video className="mr-1 h-3 w-3" />
+                          Video
+                        </Badge>
+                      )}
+                    </div>
+                    <CardTitle className="text-lg mt-2">{session.title}</CardTitle>
+                  </div>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon" className="h-8 w-8">
+                        <MoreHorizontal className="h-4 w-4" />
+                        <span className="sr-only">Open menu</span>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem>View Notes</DropdownMenuItem>
+                      <DropdownMenuItem>Schedule Follow-up</DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </CardHeader>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <Clock className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm">{session.time}</span>
+                </div>
+                <div className="flex items-center gap-3 mt-2">
+                  {userRole === 'mentor' ? (
+                    <Briefcase className="h-4 w-4 text-muted-foreground" />
+                  ) : (
+                    <User className="h-4 w-4 text-muted-foreground" />
+                  )}
+                  <div className="flex items-center gap-2">
+                    <Avatar className="h-6 w-6">
+                      <AvatarImage src={session.avatar} alt={session.participant} />
+                      <AvatarFallback>{session.participant.substring(0, 2)}</AvatarFallback>
+                    </Avatar>
+                    <span className="text-sm">{session.participant}</span>
+                  </div>
+                </div>
+              </CardContent>
+              <CardFooter className="p-4 pt-0 flex justify-end gap-2">
+                <Button variant="outline" size="sm">
+                  View Session
+                </Button>
+              </CardFooter>
+            </Card>
+          ))}
+        </TabsContent>
+      </Tabs>
+    </div>
   );
 };
 

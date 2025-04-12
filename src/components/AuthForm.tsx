@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Eye, EyeOff, UserPlus, LogIn, Mail, Lock, User, Briefcase } from 'lucide-react';
@@ -32,18 +31,11 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
     // In a real app, you would handle authentication here
     console.log("Form submitted with data:", formData);
     
-    // Simulate successful authentication and route based on role
-    if (type === 'login') {
-      if (formData.role === 'mentor') {
-        // Use the navigate function with the correct state
-        navigate('/dashboard', { state: { userRole: 'mentor' } });
-      } else {
-        navigate('/dashboard', { state: { userRole: 'mentee' } });
-      }
-    } else {
-      // For signup, directly navigate to dashboard with role
-      navigate('/dashboard', { state: { userRole: formData.role } });
-    }
+    // Save user role to localStorage
+    localStorage.setItem('userRole', formData.role);
+    
+    // Redirect to dashboard
+    navigate('/dashboard');
   };
 
   const toggleShowPassword = () => {
@@ -213,7 +205,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
                 fill="#4285F4"
               />
               <path
-                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23 17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
                 fill="#34A853"
               />
               <path
