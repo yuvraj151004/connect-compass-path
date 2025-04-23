@@ -16,8 +16,8 @@ import { useNavigate } from 'react-router-dom';
 const menteeData = [
   {
     id: 1,
-    name: 'Emma Johnson',
-    avatar: '/placeholder.svg',
+    name: 'Priya Sharma',
+    avatar: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=300&h=300',
     title: 'Frontend Developer',
     skills: ['React', 'TypeScript', 'UI/UX'],
     bio: 'Junior developer looking to improve frontend skills and architecture knowledge',
@@ -25,8 +25,8 @@ const menteeData = [
   },
   {
     id: 2,
-    name: 'David Martinez',
-    avatar: '/placeholder.svg',
+    name: 'Arjun Patel',
+    avatar: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=300&h=300',
     title: 'Data Science Student',
     skills: ['Python', 'Data Analysis', 'Machine Learning'],
     bio: 'Studying data science, looking for guidance on career paths and project work',
@@ -34,8 +34,8 @@ const menteeData = [
   },
   {
     id: 3,
-    name: 'Sarah Wilson',
-    avatar: '/placeholder.svg',
+    name: 'Meera Reddy',
+    avatar: 'https://images.unsplash.com/photo-1581092795360-fd1ca04f0952?auto=format&fit=crop&w=300&h=300',
     title: 'Mobile Developer',
     skills: ['React Native', 'Flutter', 'iOS'],
     bio: 'Mobile app developer looking to discuss architecture and performance optimization',
@@ -43,8 +43,8 @@ const menteeData = [
   },
   {
     id: 4,
-    name: 'Michael Chen',
-    avatar: '/placeholder.svg',
+    name: 'Aditya Verma',
+    avatar: 'https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?auto=format&fit=crop&w=300&h=300',
     title: 'Backend Engineer',
     skills: ['Node.js', 'Java', 'Databases'],
     bio: 'Backend developer looking for guidance on system design and scaling',

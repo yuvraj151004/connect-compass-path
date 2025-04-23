@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Routes, Route } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
@@ -15,20 +14,13 @@ const Dashboard = () => {
     (localStorage.getItem('userRole') as 'mentee' | 'mentor') || 'mentee'
   );
   
-  // Function to handle logout
   const handleLogout = () => {
-    // Clear user data from localStorage
     localStorage.removeItem('userRole');
-    
-    // Show toast notification
     toast.success("You've been successfully logged out");
-    
-    // Redirect to home page
     navigate('/');
   };
 
   useEffect(() => {
-    // Check if userRole is present in localStorage on component mount
     const storedRole = localStorage.getItem('userRole') as 'mentee' | 'mentor';
     if (storedRole) {
       setUserRole(storedRole);
@@ -39,7 +31,7 @@ const Dashboard = () => {
     <DashboardLayout 
       userRole={userRole}
       onLogout={handleLogout}
-      userName={userRole === 'mentor' ? 'Vikram Patel' : 'Ananya Sharma'}
+      userName={userRole === 'mentor' ? 'Rajesh Kumar' : 'Priya Sharma'}
     >
       <div className="space-y-6">
         <Routes>

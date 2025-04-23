@@ -27,11 +27,10 @@ interface Mentor {
 const MyMentors = () => {
   const navigate = useNavigate();
   
-  // Sample data - in a real app, this would come from an API
   const mentors: Mentor[] = [
     {
       id: '1',
-      name: 'Sarah Johnson',
+      name: 'Vikram Mehta',
       title: 'Senior Software Engineer',
       company: 'TechGiant Inc.',
       expertise: ['React', 'Node.js', 'System Design'],
@@ -40,7 +39,7 @@ const MyMentors = () => {
     },
     {
       id: '2',
-      name: 'Michael Chen',
+      name: 'Neha Gupta',
       title: 'Product Manager',
       company: 'InnovateCorp',
       expertise: ['Product Strategy', 'Agile', 'User Research'],
@@ -49,7 +48,7 @@ const MyMentors = () => {
     },
     {
       id: '3',
-      name: 'Alex Rivera',
+      name: 'Rohit Sharma',
       title: 'UX/UI Designer',
       company: 'DesignHub',
       expertise: ['UI Design', 'User Testing', 'Figma'],
@@ -58,7 +57,7 @@ const MyMentors = () => {
     },
     {
       id: '4',
-      name: 'Jessica Taylor',
+      name: 'Anjali Desai',
       title: 'Frontend Tech Lead',
       company: 'WebWorks',
       expertise: ['React', 'TypeScript', 'Performance Optimization'],
@@ -67,7 +66,6 @@ const MyMentors = () => {
     },
   ];
 
-  // Format date for display
   const formatDate = (dateString: string | null) => {
     if (!dateString) return 'Not scheduled';
     
@@ -81,7 +79,6 @@ const MyMentors = () => {
     return new Date(dateString).toLocaleString('en-US', options);
   };
 
-  // Get status badge style
   const getStatusBadge = (status: Mentor['status']) => {
     switch (status) {
       case 'active':
@@ -95,7 +92,6 @@ const MyMentors = () => {
     }
   };
 
-  // Action handlers
   const handleViewProfile = (mentorId: string) => {
     navigate(`/mentors/${mentorId}`);
   };
@@ -125,7 +121,6 @@ const MyMentors = () => {
           </Link>
         </div>
 
-        {/* Search and filter */}
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -140,7 +135,6 @@ const MyMentors = () => {
           </button>
         </div>
 
-        {/* Mentors Table */}
         <div className="bg-card border rounded-lg shadow-sm overflow-hidden">
           <Table>
             <TableHeader>
@@ -225,7 +219,6 @@ const MyMentors = () => {
           </Table>
         </div>
 
-        {/* Quick Actions */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           {[
             {

@@ -35,8 +35,8 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
       id: 1,
       title: "New session request",
       message: userRole === 'mentor' 
-        ? "Rohan Gupta wants to schedule a session with you" 
-        : "Neha Verma accepted your session request",
+        ? "Priya Sharma wants to schedule a session with you" 
+        : "Vikram Mehta accepted your session request",
       time: "2 hours ago"
     },
     {
@@ -49,8 +49,8 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
       id: 3,
       title: "New message",
       message: userRole === 'mentor' 
-        ? "You received a message from Ananya Sharma" 
-        : "You received a message from Vikram Patel",
+        ? "You received a message from Arjun Patel" 
+        : "You received a message from Neha Gupta",
       time: "3 days ago"
     }
   ];
