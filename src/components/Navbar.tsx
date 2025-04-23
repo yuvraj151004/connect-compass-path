@@ -1,14 +1,45 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Menu, X, UserPlus, LogIn } from 'lucide-react';
+import { Menu, X, UserPlus, LogIn, Bell } from 'lucide-react';
+import { 
+  Popover,
+  PopoverContent,
+  PopoverTrigger
+} from "@/components/ui/popover";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [notificationCount, setNotificationCount] = useState(3);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
+
+  const clearNotifications = () => {
+    setNotificationCount(0);
+  };
+
+  const notifications = [
+    {
+      id: 1,
+      title: "New mentor available",
+      message: "Vikram Singh is now available for mentoring in Data Science",
+      time: "2 hours ago"
+    },
+    {
+      id: 2,
+      title: "Upcoming event",
+      message: "Career growth workshop starting in 2 days",
+      time: "1 day ago"
+    },
+    {
+      id: 3,
+      title: "New feature available",
+      message: "Try our new AI-powered mentor matching system",
+      time: "3 days ago"
+    }
+  ];
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -27,10 +58,51 @@ const Navbar = () => {
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-6">
-          <Link to="/mentors" className="text-sm font-medium hover:text-primary">Find Mentors</Link>
-          <Link to="/forum" className="text-sm font-medium hover:text-primary">Forum</Link>
-          <Link to="/about" className="text-sm font-medium hover:text-primary">How It Works</Link>
+          <Link to="/login" className="text-sm font-medium hover:text-primary">Find Mentors</Link>
+          <Link to="/login" className="text-sm font-medium hover:text-primary">Forum</Link>
+          <Link to="/login" className="text-sm font-medium hover:text-primary">How It Works</Link>
+          
           <div className="flex items-center gap-2">
+            <Popover>
+              <PopoverTrigger asChild>
+                <button className="relative inline-flex items-center justify-center">
+                  <Bell className="h-5 w-5 text-muted-foreground hover:text-primary transition-colors" />
+                  {notificationCount > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
+                      {notificationCount}
+                    </span>
+                  )}
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="w-80 p-0" align="end">
+                <div className="p-4 border-b">
+                  <div className="flex justify-between items-center">
+                    <h3 className="font-medium">Notifications</h3>
+                    <button 
+                      onClick={clearNotifications} 
+                      className="text-xs text-primary hover:underline"
+                    >
+                      Mark all as read
+                    </button>
+                  </div>
+                </div>
+                <div className="max-h-80 overflow-auto">
+                  {notifications.map(notification => (
+                    <div key={notification.id} className="p-4 border-b hover:bg-secondary/20 transition-colors cursor-pointer">
+                      <div className="flex justify-between">
+                        <h4 className="font-medium text-sm">{notification.title}</h4>
+                        <span className="text-xs text-muted-foreground">{notification.time}</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-1">{notification.message}</p>
+                    </div>
+                  ))}
+                </div>
+                <div className="p-2 border-t text-center">
+                  <Link to="/login" className="text-xs text-primary hover:underline">View all notifications</Link>
+                </div>
+              </PopoverContent>
+            </Popover>
+            
             <Link to="/login" className="flex items-center gap-1 text-sm font-medium text-primary hover:underline">
               <LogIn className="h-4 w-4" />
               <span>Login</span>
@@ -52,9 +124,9 @@ const Navbar = () => {
       {isMenuOpen && (
         <div className="md:hidden container mx-auto py-4 bg-background">
           <nav className="flex flex-col gap-4">
-            <Link to="/mentors" className="text-sm font-medium hover:text-primary" onClick={toggleMenu}>Find Mentors</Link>
-            <Link to="/forum" className="text-sm font-medium hover:text-primary" onClick={toggleMenu}>Forum</Link>
-            <Link to="/about" className="text-sm font-medium hover:text-primary" onClick={toggleMenu}>How It Works</Link>
+            <Link to="/login" className="text-sm font-medium hover:text-primary" onClick={toggleMenu}>Find Mentors</Link>
+            <Link to="/login" className="text-sm font-medium hover:text-primary" onClick={toggleMenu}>Forum</Link>
+            <Link to="/login" className="text-sm font-medium hover:text-primary" onClick={toggleMenu}>How It Works</Link>
             <div className="flex flex-col gap-2 pt-2 border-t">
               <Link to="/login" className="flex items-center gap-1 text-sm font-medium text-primary" onClick={toggleMenu}>
                 <LogIn className="h-4 w-4" />

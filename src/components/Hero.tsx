@@ -15,11 +15,11 @@ const Hero = () => {
             MentorConnect pairs you with experienced mentors in your field, helping you achieve your goals through personalized guidance, scheduled sessions, and continuous support.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
-            <Link to="/signup?role=mentee" className="btn-mentee flex items-center justify-center gap-2">
+            <Link to="/login?role=mentee" className="btn-mentee flex items-center justify-center gap-2">
               <span>Find a Mentor</span>
               <ArrowRight className="h-4 w-4" />
             </Link>
-            <Link to="/signup?role=mentor" className="btn-mentor flex items-center justify-center gap-2">
+            <Link to="/login?role=mentor" className="btn-mentor flex items-center justify-center gap-2">
               <span>Become a Mentor</span>
               <ArrowRight className="h-4 w-4" />
             </Link>
@@ -50,7 +50,7 @@ const Hero = () => {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold">Sarah Johnson</h3>
+                  <h3 className="text-lg font-semibold">Priya Sharma</h3>
                   <p className="text-muted-foreground text-sm">Product Design Lead at Google</p>
                 </div>
               </div>
@@ -78,7 +78,7 @@ const Hero = () => {
                     ))}
                     <span className="text-sm font-medium ml-1">4.9 (42 reviews)</span>
                   </div>
-                  <button className="btn-primary text-sm py-1">View Profile</button>
+                  <Link to="/login" className="btn-primary text-sm py-1">View Profile</Link>
                 </div>
               </div>
             </div>

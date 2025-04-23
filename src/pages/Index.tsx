@@ -1,19 +1,22 @@
-import React from 'react';
+
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Hero from '../components/Hero';
 import Features from '../components/Features';
 import MentorCard from '../components/MentorCard';
 import Footer from '../components/Footer';
-import { ChevronRight, Check, Search, User, Calendar } from 'lucide-react';
+import { ChevronRight, Check, Search, User, Calendar, Bell } from 'lucide-react';
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
-// Sample data for featured mentors
+// Sample data for featured mentors with Indian names
 const featuredMentors = [
   {
     id: '1',
-    name: 'Sarah Johnson',
+    name: 'Priya Sharma',
     title: 'Product Design Lead',
     company: 'Google',
+    avatar: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=300&h=300',
     skills: ['UI/UX Design', 'Product Strategy', 'Career Growth', 'Leadership'],
     rating: 4.9,
     reviewCount: 42,
@@ -21,9 +24,10 @@ const featuredMentors = [
   },
   {
     id: '2',
-    name: 'Michael Chen',
+    name: 'Rahul Mehta',
     title: 'Senior Software Engineer',
     company: 'Microsoft',
+    avatar: 'https://images.unsplash.com/photo-1581092795360-fd1ca04f0952?auto=format&fit=crop&w=300&h=300',
     skills: ['Full-Stack Development', 'System Architecture', 'React', 'Mentorship'],
     rating: 4.8,
     reviewCount: 35,
@@ -31,9 +35,10 @@ const featuredMentors = [
   },
   {
     id: '3',
-    name: 'Emily Rodriguez',
+    name: 'Anjali Desai',
     title: 'Marketing Director',
     company: 'Adobe',
+    avatar: 'https://images.unsplash.com/photo-1649972904349-6e44c42644a7?auto=format&fit=crop&w=300&h=300',
     skills: ['Digital Marketing', 'Brand Strategy', 'Content Creation', 'Analytics'],
     rating: 4.7,
     reviewCount: 29,
@@ -42,6 +47,8 @@ const featuredMentors = [
 ];
 
 const Index = () => {
+  const [notificationCount, setNotificationCount] = useState(3);
+  
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -113,7 +120,7 @@ const Index = () => {
                   Connect with our top-rated mentors to accelerate your growth.
                 </p>
               </div>
-              <Link to="/mentors" className="btn-primary flex items-center gap-1">
+              <Link to="/login" className="btn-primary flex items-center gap-1">
                 <span>View All Mentors</span>
                 <ChevronRight className="h-4 w-4" />
               </Link>
@@ -141,19 +148,19 @@ const Index = () => {
               {[
                 {
                   quote: "Finding a mentor changed my career trajectory. The guidance I received helped me land my dream job at a top tech company.",
-                  author: "Alex Rivera",
+                  author: "Arjun Reddy",
                   role: "Software Developer",
                   image: null
                 },
                 {
                   quote: "As a mentor, I find incredible fulfillment in helping others grow. The platform makes it easy to connect with mentees who truly benefit from my experience.",
-                  author: "Dr. Lisa Wang",
+                  author: "Dr. Kavita Patel",
                   role: "Data Science Director",
                   image: null
                 },
                 {
                   quote: "The structured approach to mentorship on this platform helped me stay accountable and make consistent progress toward my goals.",
-                  author: "Jamie Taylor",
+                  author: "Ravi Verma",
                   role: "Marketing Specialist",
                   image: null
                 }
@@ -199,10 +206,10 @@ const Index = () => {
                 Join thousands of mentors and mentees who are transforming their careers and lives through meaningful connections.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link to="/signup?role=mentee" className="btn-primary bg-white text-primary border-2 border-white hover:bg-transparent hover:text-white">
+                <Link to="/login?role=mentee" className="btn-primary bg-white text-primary border-2 border-white hover:bg-transparent hover:text-white">
                   Find a Mentor
                 </Link>
-                <Link to="/signup?role=mentor" className="btn-primary bg-transparent border-2 border-white hover:bg-white hover:text-primary">
+                <Link to="/login?role=mentor" className="btn-primary bg-transparent border-2 border-white hover:bg-white hover:text-primary">
                   Become a Mentor
                 </Link>
               </div>

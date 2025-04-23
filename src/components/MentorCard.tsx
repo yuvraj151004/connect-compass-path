@@ -29,26 +29,15 @@ const MentorCard: React.FC<MentorCardProps> = ({
   const navigate = useNavigate();
   
   const handleViewProfile = () => {
-    navigate(`/mentors/${id}`);
+    navigate('/login');
   };
   
   const handleScheduleSession = () => {
-    navigate('/dashboard/new-session', {
-      state: {
-        mentorId: id,
-        mentorName: name,
-        userRole: 'mentee'
-      }
-    });
+    navigate('/login');
   };
   
   const handleSendMessage = () => {
-    navigate('/dashboard/messages', {
-      state: {
-        messageId: id,
-        userRole: 'mentee'
-      }
-    });
+    navigate('/login');
   };
   
   return (
