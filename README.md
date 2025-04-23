@@ -1,5 +1,5 @@
 url for project - https://connect-compass-path.lovable.app/
-
+https://connect-compass-path.lovable.app/
 # Welcome to your Lovable project
 
 ## Project info
