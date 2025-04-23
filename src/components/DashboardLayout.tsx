@@ -19,9 +19,16 @@ import { useToast } from '@/hooks/use-toast';
 interface DashboardLayoutProps {
   children: ReactNode;
   userRole?: 'mentor' | 'mentee';
+  userName?: string;
+  onLogout?: () => void;
 }
 
-const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, userRole = 'mentee' }) => {
+const DashboardLayout: React.FC<DashboardLayoutProps> = ({ 
+  children, 
+  userRole = 'mentee', 
+  userName = 'User',
+  onLogout 
+}) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -50,17 +57,19 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, userRole = 
   };
 
   const handleLogout = () => {
-    // Clear user data from local storage
-    localStorage.removeItem('userRole');
-    
-    // Show success toast
-    toast({
-      title: "Logged out successfully",
-      description: "You have been logged out from your account.",
-    });
-    
-    // Redirect to homepage
-    navigate('/');
+    if (onLogout) {
+      onLogout();
+    } else {
+      // Default logout behavior if onLogout prop is not provided
+      localStorage.removeItem('userRole');
+      
+      toast({
+        title: "Logged out successfully",
+        description: "You have been logged out from your account.",
+      });
+      
+      navigate('/');
+    }
   };
 
   const roleColor = userRole === 'mentor' ? 'bg-mentor text-white' : 'bg-mentee text-white';
