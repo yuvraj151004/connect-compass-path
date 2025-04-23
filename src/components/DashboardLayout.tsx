@@ -1,4 +1,3 @@
-
 import React, { ReactNode, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
@@ -60,7 +59,6 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
     if (onLogout) {
       onLogout();
     } else {
-      // Default logout behavior if onLogout prop is not provided
       localStorage.removeItem('userRole');
       
       toast({
@@ -76,7 +74,6 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
 
   return (
     <div className="min-h-screen bg-background flex">
-      {/* Sidebar */}
       <aside 
         className={`bg-card border-r w-64 fixed h-full z-30 transition-transform duration-300 transform lg:translate-x-0 ${
           isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
@@ -155,9 +152,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
         </div>
       </aside>
       
-      {/* Main content */}
       <div className="flex-1 flex flex-col min-h-screen overflow-x-hidden">
-        {/* Header */}
         <header className="bg-card border-b sticky top-0 z-20">
           <div className="px-4 h-16 flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -172,32 +167,23 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
               </h1>
             </div>
             
-            <div className="flex items-center gap-2">
-              <button className="p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-secondary/50 relative">
-                <Bell className="h-5 w-5" />
-                <span className="absolute top-1 right-1 w-2 h-2 bg-primary rounded-full"></span>
-              </button>
-              
-              <div className="flex items-center gap-3 ml-2">
-                <div className="w-9 h-9 rounded-full bg-secondary flex items-center justify-center">
-                  <span className="font-medium text-sm">JS</span>
-                </div>
-                <div className="hidden md:block">
-                  <p className="text-sm font-medium">John Smith</p>
-                  <p className="text-xs text-muted-foreground">john.smith@example.com</p>
-                </div>
+            <div className="flex items-center gap-3 ml-2">
+              <div className="w-9 h-9 rounded-full bg-secondary flex items-center justify-center">
+                <span className="font-medium text-sm">VS</span>
+              </div>
+              <div className="hidden md:block">
+                <p className="text-sm font-medium">Vikram Sharma</p>
+                <p className="text-xs text-muted-foreground">vikram.sharma@example.com</p>
               </div>
             </div>
           </div>
         </header>
         
-        {/* Page content */}
         <main className="flex-1 p-4 md:p-6">
           {children}
         </main>
       </div>
       
-      {/* Overlay for mobile sidebar */}
       {isSidebarOpen && (
         <div 
           className="fixed inset-0 bg-black/20 z-20 lg:hidden" 

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
@@ -70,11 +69,11 @@ const Settings = () => {
                 <div className="flex flex-col md:flex-row gap-4">
                   <div className="flex-1 space-y-2">
                     <Label htmlFor="name">Full Name</Label>
-                    <Input id="name" defaultValue="John Smith" />
+                    <Input id="name" defaultValue="Vikram Sharma" />
                   </div>
                   <div className="flex-1 space-y-2">
                     <Label htmlFor="email">Email Address</Label>
-                    <Input id="email" type="email" defaultValue="john.smith@example.com" />
+                    <Input id="email" type="email" defaultValue="vikram.sharma@example.com" />
                   </div>
                 </div>
                 <div className="space-y-2">
@@ -83,7 +82,7 @@ const Settings = () => {
                     id="bio" 
                     className="w-full min-h-[100px] rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
                     placeholder="Tell us about yourself"
-                    defaultValue="Software developer interested in mentorship and professional growth."
+                    defaultValue="Software developer passionate about mentorship and professional growth."
                   />
                 </div>
                 <Button onClick={handleSaveSettings}>
