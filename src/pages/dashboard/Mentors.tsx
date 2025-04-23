@@ -30,7 +30,7 @@ const MyMentors = () => {
   const mentors: Mentor[] = [
     {
       id: '1',
-      name: 'Vikram Mehta',
+      name: 'Rajesh Kumar',
       title: 'Senior Software Engineer',
       company: 'TechGiant Inc.',
       expertise: ['React', 'Node.js', 'System Design'],
@@ -48,7 +48,7 @@ const MyMentors = () => {
     },
     {
       id: '3',
-      name: 'Rohit Sharma',
+      name: 'Amit Verma',
       title: 'UX/UI Designer',
       company: 'DesignHub',
       expertise: ['UI Design', 'User Testing', 'Figma'],
@@ -57,7 +57,7 @@ const MyMentors = () => {
     },
     {
       id: '4',
-      name: 'Anjali Desai',
+      name: 'Deepa Reddy',
       title: 'Frontend Tech Lead',
       company: 'WebWorks',
       expertise: ['React', 'TypeScript', 'Performance Optimization'],

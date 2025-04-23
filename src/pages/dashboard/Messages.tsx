@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { MessageCircle, Send, User, Briefcase, CheckCheck, Clock, Search } from 'lucide-react';
@@ -30,11 +29,10 @@ const Messages = () => {
   const userRole = location.state?.userRole || 'mentee';
   const messageId = location.state?.messageId;
   
-  // Mock conversations
   const [conversations, setConversations] = useState<Conversation[]>([
     {
       id: '1',
-      participant: userRole === 'mentor' ? 'James Wilson' : 'Sarah Johnson',
+      participant: userRole === 'mentor' ? 'Arjun Patel' : 'Neha Gupta',
       lastMessage: userRole === 'mentor' 
         ? 'Thank you for the feedback on my resume!' 
         : 'Looking forward to our session next week!',
@@ -44,7 +42,7 @@ const Messages = () => {
     },
     {
       id: '2',
-      participant: userRole === 'mentor' ? 'Emily Parker' : 'Michael Chen',
+      participant: userRole === 'mentor' ? 'Priya Sharma' : 'Rajesh Kumar',
       lastMessage: userRole === 'mentor'
         ? 'When can we schedule our next session?'
         : "I've shared some resources ahead of our meeting.",
@@ -54,7 +52,7 @@ const Messages = () => {
     },
     {
       id: '3',
-      participant: userRole === 'mentor' ? 'Daniel Kim' : 'Alex Rivera',
+      participant: userRole === 'mentor' ? 'Amit Verma' : 'Deepa Reddy',
       lastMessage: userRole === 'mentor'
         ? 'I applied for that job we discussed'
         : 'Do you have time to review my code?',
@@ -64,17 +62,15 @@ const Messages = () => {
     }
   ]);
   
-  // Select first conversation by default, or the one from navigation state
   const [selectedConversation, setSelectedConversation] = useState<string>(
     messageId || conversations[0].id
   );
   
-  // Mock messages for selected conversation
   const [messages, setMessages] = useState<Record<string, Message[]>>({
     '1': [
       {
         id: '1-1',
-        sender: userRole === 'mentor' ? 'James Wilson' : 'Sarah Johnson',
+        sender: userRole === 'mentor' ? 'Arjun Patel' : 'Neha Gupta',
         content: userRole === 'mentor' 
           ? "Hi, I wanted to thank you for reviewing my resume last week."
           : "Hello! I'm looking forward to our session next week.",
@@ -94,7 +90,7 @@ const Messages = () => {
       },
       {
         id: '1-3',
-        sender: userRole === 'mentor' ? 'James Wilson' : 'Sarah Johnson',
+        sender: userRole === 'mentor' ? 'Arjun Patel' : 'Neha Gupta',
         content: userRole === 'mentor' 
           ? "Yes, I applied to three companies you recommended. Fingers crossed!"
           : "Great! I'll make sure to prepare some resources on those topics.",
@@ -106,7 +102,7 @@ const Messages = () => {
     '2': [
       {
         id: '2-1',
-        sender: userRole === 'mentor' ? 'Emily Parker' : 'Michael Chen',
+        sender: userRole === 'mentor' ? 'Priya Sharma' : 'Rajesh Kumar',
         content: userRole === 'mentor'
           ? "Hi, I was wondering when we could schedule our next session?"
           : "Hi, I've shared some resources for our next meeting.",
@@ -128,7 +124,7 @@ const Messages = () => {
     '3': [
       {
         id: '3-1',
-        sender: userRole === 'mentor' ? 'Daniel Kim' : 'Alex Rivera',
+        sender: userRole === 'mentor' ? 'Amit Verma' : 'Deepa Reddy',
         content: userRole === 'mentor'
           ? "I applied for that job we discussed last week."
           : "Do you have time to review my code this week?",
@@ -149,14 +145,11 @@ const Messages = () => {
     ]
   });
   
-  // New message input
   const [newMessage, setNewMessage] = useState<string>('');
   
-  // Mark messages as read when conversation is selected
   const handleSelectConversation = (conversationId: string) => {
     setSelectedConversation(conversationId);
     
-    // Mark messages as read
     setMessages(prev => {
       const conversationMessages = prev[conversationId];
       if (!conversationMessages) return prev;
@@ -172,7 +165,6 @@ const Messages = () => {
       };
     });
     
-    // Update conversation unread count
     setConversations(prev => 
       prev.map(conv => 
         conv.id === conversationId ? { ...conv, unread: 0 } : conv
@@ -180,7 +172,6 @@ const Messages = () => {
     );
   };
   
-  // Send a new message
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newMessage.trim()) return;
@@ -188,7 +179,6 @@ const Messages = () => {
     const now = new Date();
     const timestamp = 'Just now';
     
-    // Add new message to the conversation
     const newMsg: Message = {
       id: `${selectedConversation}-${Date.now()}`,
       sender: 'You',
@@ -203,7 +193,6 @@ const Messages = () => {
       [selectedConversation]: [...(prev[selectedConversation] || []), newMsg]
     }));
     
-    // Update last message in conversations list
     setConversations(prev => 
       prev.map(conv => 
         conv.id === selectedConversation 
@@ -227,7 +216,6 @@ const Messages = () => {
         
         <div className="border rounded-lg overflow-hidden bg-card h-[calc(100vh-250px)]">
           <div className="grid grid-cols-1 md:grid-cols-3 h-full">
-            {/* Conversations sidebar */}
             <div className="border-r h-full flex flex-col">
               <div className="p-4 border-b">
                 <div className="relative">
@@ -285,11 +273,9 @@ const Messages = () => {
               </ScrollArea>
             </div>
             
-            {/* Conversation */}
             <div className="md:col-span-2 flex flex-col h-full">
               {selectedConversation ? (
                 <>
-                  {/* Conversation header */}
                   <div className="p-4 border-b flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-full bg-background flex items-center justify-center">
@@ -310,7 +296,6 @@ const Messages = () => {
                     </div>
                   </div>
                   
-                  {/* Messages */}
                   <ScrollArea className="flex-1 p-4">
                     <div className="space-y-4">
                       {messages[selectedConversation]?.map((message) => (
@@ -339,7 +324,6 @@ const Messages = () => {
                     </div>
                   </ScrollArea>
                   
-                  {/* Message input */}
                   <div className="p-4 border-t">
                     <form onSubmit={handleSendMessage} className="flex gap-2">
                       <Input
